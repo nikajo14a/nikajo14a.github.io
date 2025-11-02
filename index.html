@@ -1,9 +1,2613 @@
 <!doctype html>
-<html>
-  <head>
-    
-  </head>
-  <body>
-    
-  </body>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<title>Meme Clicker</title>
+	<!-- Google AdSense -->
+	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9969595736481954"
+		crossorigin="anonymous"></script>
+	<link rel="image_src" href="assets/moyaicollection.jpeg" />
+	<meta property="og:image" content="assets/moyaicollection.jpeg" />
+	<meta property="og:image:type" content="image/jpeg" />
+	<meta property="og:image:width" content="1200" />
+	<meta property="og:image:height" content="630" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:image" content="assets/moyaicollection.jpeg" />
+	<link rel="icon" type="image/jpeg" href="assets/moyaicollection.jpeg" />
+	<style>
+		html,body{height:100%}
+		body{margin:0;font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;display:flex;align-items:center;justify-content:center;background:#f3f6fb}
+		.card{display:flex;flex-direction:column;align-items:center;gap:16px;background:#fff;padding:48px;border-radius:14px;box-shadow:0 10px 38px rgba(10,20,40,.09)}
+		#clickerBtn{font-size:52px;padding:36px 72px;border-radius:14px;border:none;background:#0078d4;color:#fff;cursor:pointer;box-shadow:0 8px 20px rgba(0,120,212,0.16)}
+		#clickerBtn:active{transform:translateY(1px)}
+		#count{font-size:34px;color:#111;font-weight:600}
+		.small{font-size:12px;color:#666}
+		#moyaiImage { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000; }
+		#moyaiImage {
+			display: none;
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			width: auto;
+			height: auto;
+			max-width: 90vw;
+			max-height: 90vh;
+			object-fit: contain;
+			z-index: 1000;
+			opacity: 0.7;
+			transition: opacity 1s ease-out;
+			pointer-events: none; 
+		}
+		.moyai-row {
+			display: none;
+			margin-top: 12px;
+			font-size: 14px;
+			color: #666;
+		}
+		.menu {
+			display: none; 
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 60px;
+			height: 100%;
+			background: #333;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			padding: 10px 0;
+			gap: 10px;
+		}
+		.menu-button {
+			width: 50px;
+			height: 50px;
+			background: #555;
+			border-radius: 10px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			cursor: pointer;
+			color: white;
+			font-size: 12px;
+			text-align: center;
+		}
+		.menu-button img {
+			width: 30px;
+			height: 30px;
+			margin-bottom: 5px;
+		}
+		.menu-button.settings {
+			margin-top: auto;
+		}
+		#settingsButton {
+			padding: 10px 14px;
+			border-radius: 10px;
+			border: 1px solid rgba(0,0,0,0.06);
+			background: linear-gradient(180deg,#ffffff,#f2f6fb);
+			box-shadow: 0 6px 18px rgba(10,20,40,0.06);
+			cursor: pointer;
+			font-weight:600;
+		}
+		.settings-like {
+			padding: 10px 14px;
+			border-radius: 10px;
+			border: 1px solid rgba(0,0,0,0.06);
+			background: linear-gradient(180deg,#ffffff,#f2f6fb);
+			box-shadow: 0 6px 18px rgba(10,20,40,0.06);
+			cursor: pointer;
+			font-weight:600;
+		}
+		.sliding-menu {
+			position: fixed;
+			top: 0;
+			left: -200px;
+			width: 200px;
+			height: 100%;
+			background: white;
+			box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+			display: flex;
+			flex-direction: column;
+			padding: 20px;
+			transition: left 0.3s ease;
+		}
+
+		.sliding-menu.open {
+			left: 0;
+		}
+
+		.sliding-menu .grid {
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			gap: 10px;
+		}
+		.sliding-menu .grid .grid-button {
+			width: 80px;
+			height: 80px;
+			background: #f3f3f3;
+			border-radius: 10px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			cursor: pointer;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+		}
+		.collection-menu {
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			width: 80%;
+			height: 80%;
+			background: white;
+			border-radius: 10px;
+			box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+			display: none; 
+			padding: 20px;
+			overflow: auto;
+			grid-template-columns: repeat(5, 1fr);
+			grid-auto-rows: auto;
+			gap: 16px;
+			align-items: start;
+			justify-items: center;
+		}
+
+		.collection-menu .close-x {
+			position: absolute;
+			top: 12px;
+			right: 12px;
+			background: rgba(0,0,0,0.06);
+			border: none;
+			border-radius: 6px;
+			width: 28px;
+			height: 28px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			cursor: pointer;
+			font-weight: 700;
+		}
+		.collection-menu .rarity-header { grid-column: 1 / -1; }
+		.collection-menu .rarity-items { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+		#all-items-flat { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(5,1fr); gap: 12px; }
+		.rarity-header {
+			width: 100%;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 8px 12px;
+			cursor: pointer;
+			border-bottom: 1px solid #eee;
+		}
+
+		.rarity-label {
+			font-weight: 600;
+			margin-right: 8px;
+		}
+
+		.rarity-common { color: #2d9cdb; }
+		.rarity-uncommon { color: #27ae60; }
+		.rarity-rare { color: #9b59b6; }
+		.rarity-epic { color: #f39c12; }
+		.rarity-legendary { color: #e74c3c; }
+		.rarity-items { width: 100%; display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; max-height: none; overflow: visible; }
+		.rarity-items.collapsed { max-height: 0; overflow: hidden; transition: max-height 0.28s ease; }
+
+		.collection-top-toggle {
+			position: absolute;
+			top: 12px;
+			left: 12px;
+			width: 22px;
+			height: 22px;
+			border: 2px solid #444;
+			background: white;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 12px;
+		}
+		.collection-item {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			margin: 10px;
+			width: 100%;
+			max-width: 160px;
+		}
+		.collection-item img {
+			width: 100px;
+			height: 100px;
+			border-radius: 10px;
+			background: black;
+		}
+		.collection-item span {
+			margin-top: 5px;
+			font-size: 12px;
+			color: #666;
+		}
+			.collection-item .count {
+				display: block;
+				font-size: 11px;
+				color: #999;
+				margin-top: 4px;
+			}
+			#guiToastContainer { position: fixed; top: 16px; right: 16px; z-index: 9999; display:flex; flex-direction:column; gap:8px; align-items:flex-end; }
+			.guiToast { background: rgba(0,0,0,0.85); color: white; padding:10px 14px; border-radius:8px; min-width:200px; box-shadow:0 6px 18px rgba(0,0,0,0.2); font-size:13px; }
+			.guiToast button { margin-left:12px; background:transparent; border:none; color:#fff; cursor:pointer; font-weight:600; }
+	</style>
+</head>
+<body>
+	<!-- Content warning modal shown before interacting with site -->
+	<div id="contentWarning" style="position:fixed;left:0;top:0;right:0;bottom:0;z-index:10000000;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.75);">
+		<div style="max-width:720px;width:92%;background:#fff;padding:20px;border-radius:10px;box-shadow:0 12px 40px rgba(0,0,0,.5);color:#222;font-family:Arial,Helvetica,sans-serif;">
+			<h2 style="margin:0 0 8px 0;font-size:20px;">Content warning</h2>
+			<p style="margin:0 0 12px 0;color:#444;line-height:1.4;">This site contains images and sounds which may include offensive, culturally sensitive, or loud material (for example: strong language, depictions referencing religion or politics, or sudden loud noises). If you might be upset by such content, please choose the kitten option and leave the page.</p>
+			<div style="margin-top:8px;color:#444;display:flex;align-items:center;gap:8px;">
+				<input type="checkbox" id="rememberDisclaimer" />
+				<label for="rememberDisclaimer" style="font-size:13px;color:#444;">Understand for this browser (don't show again)</label>
+			</div>
+			<div style="display:flex;gap:12px;justify-content:flex-end;margin-top:14px;">
+				<button id="kittensBtn" style="background:#eee;border:1px solid #ccc;padding:8px 12px;border-radius:6px;cursor:pointer;font-weight:600;">No, take me to kittens!</button>
+				<button id="acceptDisclaimerBtn" style="background:#0078d4;color:#fff;border:none;padding:8px 12px;border-radius:6px;cursor:pointer;font-weight:600;">I understand, play</button>
+			</div>
+		</div>
+	</div>
+	<script>
+		(function(){
+			try {
+				const modal = document.getElementById('contentWarning');
+				const accept = document.getElementById('acceptDisclaimerBtn');
+				const kittens = document.getElementById('kittensBtn');
+				const remember = document.getElementById('rememberDisclaimer');
+				if (!modal) return;
+				function setCookieLocal(name, value, days) {
+					try {
+						const d = new Date(); d.setTime(d.getTime() + (days*24*60*60*1000));
+						document.cookie = name + '=' + encodeURIComponent(String(value)) + ';expires=' + d.toUTCString() + ';path=/';
+					} catch(_) {}
+				}
+				function getCookieLocal(name) {
+					try {
+						const nameEQ = name + '=';
+						const ca = document.cookie.split(';');
+						for (let i=0;i<ca.length;i++){
+							let c = ca[i]; while (c.charAt(0)===' ') c = c.substring(1,c.length);
+							if (c.indexOf(nameEQ) === 0) return decodeURIComponent(c.substring(nameEQ.length,c.length));
+						}
+					} catch(_) {}
+					return null;
+				}
+				try {
+					const acceptedCookie = getCookieLocal('content_warning_accepted');
+					let acceptedLocal = null;
+					try { acceptedLocal = localStorage.getItem('content_warning_accepted'); } catch(_) { acceptedLocal = null; }
+					if (acceptedCookie === '1' || acceptedLocal === '1') {
+						try { modal.remove(); } catch(_) { modal.style.display = 'none'; }
+						return;
+					}
+				} catch(_) {}
+				document.documentElement.style.overflow = 'hidden';
+				accept && accept.addEventListener('click', function(){
+					try {
+						if (remember && remember.checked) {
+							setCookieLocal('content_warning_accepted','1',365);
+							try { localStorage.setItem('content_warning_accepted','1'); } catch(_) {}
+						}
+					} catch(_) {}
+					try { modal.remove(); } catch(_) { modal.style.display = 'none'; }
+					try { document.documentElement.style.overflow = ''; } catch(_) {}
+				});
+				kittens && kittens.addEventListener('click', function(){
+					try { window.location.replace('https://tenor.com/pl/search/kitten-gifs'); } catch(_) { window.location.href = 'https://tenor.com/pl/search/kitten-gifs'; }
+				});
+				document.addEventListener('keydown', function(e){ if (!modal) return; if (e.key === 'Enter') { accept && accept.click(); } });
+			} catch(_) {}
+		})();
+	</script>
+	<script>
+		(function(){
+			try {
+				function startFlash() {
+					const el = document.getElementById('importantFlash');
+					if (!el) return;
+					let hue = 0;
+					let grow = true;
+					let scale = 1;
+					setInterval(() => {
+						hue = (hue + 18) % 360;
+						el.style.color = `hsl(${hue}, 100%, 50%)`;
+						if (grow) { scale += 0.03; if (scale >= 1.12) grow = false; }
+						else { scale -= 0.03; if (scale <= 1.0) grow = true; }
+						el.style.transform = `scale(${scale})`;
+						el.style.display = 'inline-block';
+					}, 120);
+				}
+				if (document.readyState === 'loading') {
+					document.addEventListener('DOMContentLoaded', startFlash);
+				} else {
+					startFlash();
+				}
+			} catch(_) {}
+		})();
+	</script>
+	<div class="card" role="application" aria-label="Meme Clicker game">
+		<button id="clickerBtn" aria-label="Click me">Click</button> <!-- ↑ ↑ ↓ ↓ ← → ← → 2 1 3 7 ;) -->
+		<div id="count">0</div>
+		<div class="moyai-row">Moyai's in row:</div> 
+		<button id="memePetButton" aria-label="Meme Pet" class="settings-like">Meme Pet</button>
+		<button id="settingsButton" aria-label="Settings" class="settings-like">Settings</button>
+		<div id="settingsImportant" style="margin-top:6px;text-align:center;">
+			<span id="importantFlash" style="font-weight:800;font-family:Arial,Helvetica,sans-serif;letter-spacing:0.5px;font-size:13px;">/\ important!</span>
+		</div>
+	</div>
+	<img id="moyaiImage" src="assets/moyai.jpeg" alt="Moyai" width="200" height="200">
+	<audio id="moyaiSound" src="assets/moyai.mp3"></audio>
+	<div id="guiToastContainer" aria-live="polite" aria-atomic="true"></div>
+
+	<div class="sliding-menu" id="slidingMenu">
+		<div class="grid">
+			<div class="grid-button">1</div>
+			<div class="grid-button">2</div>
+			<div class="grid-button" id="upgradesButton">Upgrades</div>
+			<div class="grid-button" id="shopButton">Shop</div>
+			<div class="grid-button" id="moyaiCollectionButton">Collection</div>
+			<div class="grid-button" id="popupSettingsButton">Popup Settings</div>
+			<div class="grid-button" id="milestonesButton">Milestones</div>
+			<div class="grid-button" id="devTestButton" style="display:none">Dev</div>
+		</div>
+	</div>
+	<div id="devTestPanel" style="display:none; position: fixed; top: 20%; left: 50%; transform: translateX(-50%); width: 360px; background: white; border-radius:8px; padding:12px; box-shadow:0 6px 22px rgba(0,0,0,.15); z-index:2000;">
+		<h3 style="margin:0 0 8px 0">Dev Test</h3>
+		<p style="margin:0 0 8px 0; font-size:12px; color:#666">Developer test utilities — force-spawn items for testing.</p>
+			<div style="display:flex;gap:8px;flex-wrap:wrap;">
+				<button id="devForceTenna">Force Tenna</button>
+				<button id="devForceTenna2">Force Tenna (variant)</button>
+					<button id="devForceTennadance">Force Tenna (dance)</button>
+					<button id="devForceTennadance2">Force Tenna (dance 2)</button>
+				<button id="devForceJewoskar">Force Jewoskar</button>
+				<button id="devForceMoiay">Force Moiay</button>
+							<button id="devForceItstvtimeAnim">Animation Test (ITS TV)</button>
+							<button id="devForceLadododo">Force Ladododo</button>
+							<button id="devForceGotosleep">Force Ladododo (gotosleep)</button>
+									<button id="devForce67">Force 67</button>
+									<button id="devForceAnalog67">Force 67 (analog)</button>
+									<button id="devForceVergil">Force Miyabi (vergil)</button>
+									<button id="devForceHihihiha">Force Hihihiha</button>
+							<button id="devForceSensei">Force Sensei</button>
+							<button id="devForce911">Force 911</button>
+									<button id="devForceSojyak">Force Sojyak</button>
+									<button id="devForceChickenjockey">Force Chicken Jockey</button>
+			</div>
+		<div style="margin-top:12px;text-align:right;"><button id="closeDevTest">Close</button></div>
+	</div>
+
+	<!-- Meme Pet slide-in panel (initially empty) -->
+	<div id="memePetPanel" style="position:fixed;top:0;right:-380px;width:360px;height:100%;background:white;box-shadow:-8px 0 24px rgba(0,0,0,0.14);transition:right 300ms ease;z-index:200100;padding:12px;display:none;overflow:auto;">
+		<h3 style="margin:0 0 8px 0">Meme Pet</h3>
+		<div id="memePetContent" style="min-height:60vh;color:#666;font-size:13px;">(empty)</div>
+		<div style="margin-top:12px;text-align:right;"><button id="closeMemePet">Close</button></div>
+	</div>
+	<div id="shopPanel" style="display:none; position: fixed; top: 18%; left: 50%; transform: translateX(-50%); width: 520px; max-height: 70vh; overflow:auto; background: white; border-radius:8px; padding:12px; box-shadow:0 6px 22px rgba(0,0,0,.15); z-index:2000;">
+		<h3 style="margin:0 0 8px 0">Shop</h3>
+		<div id="shopContent" style="min-height:160px; color:#666; font-size:13px; display:flex;align-items:center;justify-content:center;">
+			<div style="text-align:left;max-width:100%;width:100%;">
+				<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #eee;">
+					<div>
+						<strong>Luck Boost (10m)</strong>
+						<div style="font-size:12px;color:#666">Temporarily adds +3 milestone worth of luck for 10 minutes.</div>
+					</div>
+					<div style="text-align:right">
+						<div style="font-weight:600">Cost: 250 clicks</div>
+						<div style="margin-top:6px"><button id="buyLuckBoost">Buy</button></div>
+					</div>
+				</div>
+					<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #eee;margin-top:8px;">
+						<div>
+							<strong>Super Luck Boost (10m)</strong>
+							<div style="font-size:12px;color:#666">Requires: Clicks milestone 2500, Popups milestone 500, and 1 variation unlocked. Grants +8 milestone worth of luck for 10 minutes.</div>
+						</div>
+						<div style="text-align:right">
+							<div style="font-weight:600">Cost: 1000 clicks</div>
+							<div style="margin-top:6px"><button id="buySuperLuckBoost">Buy</button></div>
+						</div>
+					</div>
+					<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #eee;margin-top:8px;">
+						<div>
+							<strong>Ultra Luck Boost (10m)</strong>
+							<div style="font-size:12px;color:#666">Requires: Clicks milestone 5000, Popups milestone 1000, 5 variations unlocked, and the hidden milestone '67 × 67' (obtained_67_67). Grants +15 milestone worth of luck for 10 minutes.</div>
+							<div style="font-size:12px;color:#666">Requires: Clicks milestone 5000, Popups milestone 1000, and 5 variations unlocked. Grants +15 milestone worth of luck for 10 minutes.</div>
+						</div>
+						<div style="text-align:right">
+							<div style="font-weight:600">Cost: 2500 clicks</div>
+							<div style="margin-top:6px"><button id="buyUltraLuckBoost">Buy</button></div>
+						</div>
+					</div>
+				<div id="shopStatus" style="margin-top:10px;font-size:13px;color:#444;">No active boosts.</div>
+					<div id="shopStatusSuper" style="margin-top:6px;font-size:12px;color:#666;"></div>
+			</div>
+		</div>
+
+		<div style="margin-top:12px;text-align:right;"><button id="closeShop">Close</button></div>
+	</div>
+	<div id="upgradesPanel" style="display:none; position: fixed; top: 18%; left: 50%; transform: translateX(-50%); width: 520px; max-height: 70vh; overflow:auto; background: white; border-radius:8px; padding:12px; box-shadow:0 6px 22px rgba(0,0,0,.15); z-index:2000;">
+		<h3 style="margin:0 0 8px 0">Upgrades</h3>
+		<div id="upgradesContent" style="min-height:160px; color:#666; font-size:13px; display:flex;align-items:flex-start;justify-content:flex-start;flex-direction:column;gap:12px;padding:8px;">
+			<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #eee;width:100%;">
+				<div>
+					<strong>Click Value Upgrade</strong>
+					<div style="font-size:12px;color:#666">Each purchase increases your click value by +1 (so a click grants 2 displayed clicks instead of 1). This does NOT change popup chances — popup logic still triggers once per click action. Costs Moyai items to buy.</div>
+				</div>
+				<div style="text-align:right">
+					<div id="clickValuePrice" style="font-weight:600">Cost: 60 Moyai</div>
+					<div style="margin-top:6px"><button id="buyClickValueUpgrade">Buy</button></div>
+				</div>
+			</div>
+			<div id="clickValueStatus" style="font-size:12px;color:#666">Owned: 0</div>
+		
+		<!-- Permanent Luck Upgrade (purchasable with Diva Moyai) -->
+		<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #eee;width:100%;">
+		  <div style="max-width:60%">
+			<strong>Permanent Luck Upgrade</strong>
+			<div style="font-size:12px;color:#666">Each purchase permanently adds +1 milestone worth of luck (increases spawn chances). Costs Diva Moyai.</div>
+		  </div>
+		  <div style="text-align:right">
+			<div id="permLuckPrice" style="font-weight:600">Cost: 80 Diva Moyai</div>
+			<div style="margin-top:6px"><button id="buyPermLuckUpgrade">Buy</button></div>
+		  </div>
+		</div>
+		<div id="permLuckStatus" style="font-size:12px;color:#666">Owned: 0</div>
+		</div>
+		<div style="margin-top:12px;text-align:right;"><button id="closeUpgrades">Close</button></div>
+	</div>
+		<div id="milestonePanel" style="display:none; position: fixed; top: 20%; left: 50%; transform: translateX(-50%); width: 320px; background: white; border-radius:8px; padding:16px; box-shadow:0 6px 22px rgba(0,0,0,.15); z-index:2000;">
+			<h3 style="margin:0 0 8px 0">Milestones</h3>
+			<div id="milestonesList"></div>
+			<div style="margin-top:12px;text-align:right;"><button id="closeMilestones">Close</button></div>
+		</div>
+		<div id="popupSettingsPanel" style="display:none; position: fixed; top: 18%; left: 50%; transform: translateX(-50%); width: 420px; max-height: 60vh; overflow:auto; background: white; border-radius:8px; padding:12px; box-shadow:0 6px 22px rgba(0,0,0,.15); z-index:2000;">
+			<h3 style="margin:0 0 8px 0">Popup Settings</h3>
+			<p style="margin:0 0 8px 0; font-size:12px; color:#666">Disable display/sound for specific popups once you've obtained enough of that rarity. Disabled popups still count toward milestones.</p>
+			<div id="popupSettingsList"></div>
+			<div style="margin-top:12px;text-align:right;"><button id="closePopupSettings">Close</button></div>
+		</div>
+
+		<div class="collection-menu" id="collectionMenu">
+				<div class="collection-top-toggle" id="groupToggle" title="Toggle rarity grouping">▢</div>
+				<button class="close-x" id="collectionCloseBtn" aria-label="Close collection">✕</button>
+				<div class="rarity-header" data-rarity="mythic" id="header-mythic">
+					<div><span class="rarity-label rarity-mythic">Mythic</span><small class="small">(open/close)</small></div>
+					<div class="arrow">▸</div>
+				</div>
+				<div class="rarity-items collapsed" id="items-mythic">
+					<div class="collection-item" id="horse" data-rarity="mythic">
+						<img src="assets/horse.gif" alt="Horse">
+						<span class="name">Horse</span>
+						<span class="count">not yet obtained</span>
+					</div>
+					<div class="collection-item" id="grow" data-rarity="mythic">
+						<img src="assets/grow.gif" alt="Grow">
+						<span class="name">Grow</span>
+						<span class="count">not yet obtained</span>
+					</div>
+					<div class="collection-item" id="sojyak" data-rarity="mythic">
+						<img src="assets/sojyak.gif" alt="Sojyak">
+						<span class="name">Sojyak</span>
+						<span class="count">not yet obtained</span>
+					</div>
+				</div>
+				<div class="rarity-header" data-rarity="legendary" id="header-legendary">
+					<div><span class="rarity-label rarity-legendary">Legendary</span><small class="small">(open/close)</small></div>
+					<div class="arrow">▸</div>
+				</div>
+				<div class="rarity-items collapsed" id="items-legendary">
+					<div class="collection-item" id="jewoskar" data-rarity="legendary">
+						<img src="assets/jewoskar.jpeg" alt="Jewoskar">
+						<span class="name">Jewoskar</span>
+						<span class="count">not yet obtained</span>
+					</div>
+					<div class="collection-item" id="slander" data-rarity="legendary">
+						<img src="assets/slander.gif" alt="Slander">
+						<span class="name">Slander</span>
+						<span class="count">not yet obtained</span>
+					</div>
+					<div class="collection-item" id="miyabi" data-rarity="legendary">
+						<img src="assets/miyabi.jpeg" alt="Miyabi">
+						<span class="name">Miyabi</span>
+						<span class="count">not yet obtained</span>
+					</div>
+					<div class="collection-item" id="tenna" data-rarity="legendary">
+						<img src="assets/tenna.gif" alt="Tenna">
+						<span class="name">Tenna</span>
+						<span class="count">not yet obtained</span>
+					</div>
+					<div class="collection-item" id="area51" data-rarity="legendary">
+						<img src="assets/area51.gif" alt="Area 51">
+						<span class="name">Area 51</span>
+						<span class="count">not yet obtained</span>
+					</div>
+				</div>
+			<div class="rarity-header" data-rarity="epic" id="header-epic">
+				<div><span class="rarity-label rarity-epic">Epic</span><small class="small">(open/close)</small></div>
+				<div class="arrow">▸</div>
+			</div>
+			<div class="rarity-items collapsed" id="items-epic">
+				<div class="collection-item" id="2bell" data-rarity="epic">
+					<img src="assets/2bell.gif" alt="New Layer 2 Bell">
+					<span class="name">New Layer 2 Bell</span>
+					<span class="count">not yet obtained</span>
+				</div>
+				<div class="collection-item" id="amogus" data-rarity="epic" style="cursor:pointer;">
+					<img src="assets/amogus.jpeg" alt="Amogus">
+					<span class="name">Amogus</span>
+					<span class="count">not yet obtained</span>
+				</div>
+				<div class="collection-item" id="shaw" data-rarity="epic">
+					<img src="assets/shaw.jpeg" alt="Shaw">
+					<span class="name">Shaw</span>
+					<span class="count">not yet obtained</span>
+				</div>
+				<div class="collection-item" id="chickenjockey" data-rarity="epic">
+					<img src="assets/chickenjockey.gif" alt="Chicken Jockey">
+					<span class="name">Chicken Jockey</span>
+					<span class="count">not yet obtained</span>
+				</div>
+				<div class="collection-item" id="911" data-rarity="epic">
+					<img src="assets/911.jpeg" alt="911">
+					<span class="name">911</span>
+					<span class="count">not yet obtained</span>
+				</div>
+				<div class="collection-item" id="diabeto" data-rarity="epic">
+					<img src="assets/diabeto.gif" alt="Diabeto">
+					<span class="name">Diabeto</span>
+					<span class="count">not yet obtained</span>
+				</div>
+			</div>
+
+			<div class="rarity-header" data-rarity="rare" id="header-rare">
+				<div><span class="rarity-label rarity-rare">Rare</span><small class="small">(open/close)</small></div>
+				<div class="arrow">▸</div>
+			</div>
+			<div class="rarity-items" id="items-rare">
+				<div class="collection-item" id="moiay" data-rarity="rare">
+					<img src="assets/moiay.jpeg" alt="Moiay">
+					<span class="name">Moiay</span>
+					<span class="count">not yet obtained</span>
+				</div>
+				<div class="collection-item" id="sensei" data-rarity="rare">
+					<img src="assets/sensei.gif" alt="Sensei">
+					<span class="name">Sensei</span>
+					<span class="count">not yet obtained</span>
+				</div>
+				<div class="collection-item" id="itstvtime" data-rarity="rare" style="cursor:pointer;">
+					<img src="assets/itstvtime.gif" alt="ITS TV TIME">
+					<span class="name">ITS TV TIME</span>
+					<span class="count">not yet obtained</span>
+				</div>
+				<div class="collection-item" id="palefork" data-rarity="rare">
+					<img src="assets/palefork.jpeg" alt="Palefork">
+					<span class="name">Palefork</span>
+					<span class="count">not yet obtained</span>
+				</div>
+				<div class="collection-item" id="nyan" data-rarity="rare">
+					<img src="assets/nyan.gif" alt="Nyan">
+					<span class="name">Nyan</span>
+					<span class="count">not yet obtained</span>
+				</div>
+			</div>
+			<div class="rarity-header" data-rarity="uncommon" id="header-uncommon">
+				<div><span class="rarity-label rarity-uncommon">Uncommon</span><small class="small">(open/close)</small></div>
+				<div class="arrow">▸</div>
+			</div>
+			<div class="rarity-items" id="items-uncommon">
+				<div class="collection-item" id="wokendeep" data-rarity="uncommon">
+					<img src="assets/wokendeep.jpeg" alt="Wokendeep">
+					<span class="name">Wokendeep</span>
+					<span class="count">not yet obtained</span>
+				</div>
+				<div class="collection-item" id="biteof87" data-rarity="uncommon">
+					<img src="assets/biteof87.gif" alt="Bite of '87">
+					<span class="name">Bite of '87</span>
+					<span class="count">not yet obtained</span>
+				</div>
+				<div class="collection-item" id="ladododo" data-rarity="uncommon">
+					<img src="assets/ladododo.gif" alt="Ladododo">
+					<span class="name">Ladododo</span>
+					<span class="count">not yet obtained</span>
+				</div>
+				<div class="collection-item" id="hihihiha" data-rarity="uncommon">
+					<img src="assets/hihihiha.gif" alt="Hihihiha">
+					<span class="name">Hihihiha</span>
+					<span class="count">not yet obtained</span>
+				</div>
+				<div class="collection-item" id="doge" data-rarity="uncommon">
+					<img src="assets/doge.jpeg" alt="Doge">
+					<span class="name">Doge</span>
+					<span class="count">not yet obtained</span>
+				</div>
+			</div>
+			<div class="rarity-header" data-rarity="common" id="header-common">
+				<div><span class="rarity-label rarity-common">Common</span><small class="small">(open/close)</small></div>
+				<div class="arrow">▸</div>
+			</div>
+			<div class="rarity-items" id="items-common">
+				<div class="collection-item" id="moyai1" data-rarity="common">
+					<img src="assets/moyai.jpeg" alt="Moyai">
+					<span class="name">Moyai</span>
+					<span class="count">not yet obtained</span>
+				</div>
+				<div class="collection-item" id="moyai2" data-rarity="common">
+					<img src="assets/moyai2.jpeg" alt="Moyai 2">
+					<span class="name">Moyai 2</span>
+					<span class="count">not yet obtained</span>
+				</div>
+				<div class="collection-item" id="67" data-rarity="common">
+					<img src="assets/67.jpeg" alt="67">
+					<span class="name">67</span>
+					<span class="count">not yet obtained</span>
+				</div>
+				<div class="collection-item" id="rock" data-rarity="common">
+					<img src="assets/rock.gif" alt="Rock">
+					<span class="name">Rock</span>
+					<span class="count">not yet obtained</span>
+				</div>
+			</div>
+			<div class="rarity-header" data-rarity="variants" id="header-variants">
+				<div><span class="rarity-label">Variants</span><small class="small">(open/close)</small></div>
+				<div class="arrow">▸</div>
+			</div>
+			<div class="rarity-items" id="items-variants">
+				<div class="collection-item" id="amogus2" data-rarity="variants" data-nocollection="1" style="cursor:default; display:none;">
+					<img src="assets/amogus2.jpeg" alt="Amogus (variation)">
+					<span class="name">Amogus (variation)</span>
+					<span class="count">not part of collection</span>
+				</div>
+					<div class="collection-item" id="gotosleep" data-rarity="variants" data-nocollection="1" style="cursor:default; display:none;">
+						<img src="assets/gotosleep.gif" alt="Gotosleep (Ladododo variant)">
+						<span class="name">Ladododo (gotosleep)</span>
+						<span class="count">not part of collection</span>
+					</div>
+				<div class="collection-item" id="itspptime" data-rarity="variants" data-nocollection="1" style="cursor:default; display:none;">
+					<img src="assets/itspptime.gif" alt="ITS TV TIME (variant)">
+					<span class="name">ITS TV TIME (variant)</span>
+					<span class="count">not part of collection</span>
+				</div>
+				<div class="collection-item" id="tenna2" data-rarity="variants" data-nocollection="1" style="cursor:default; display:none;">
+					<img src="assets/tenna2.gif" alt="Tenna (variation)">
+					<span class="name">Tenna (variation)</span>
+					<span class="count">not part of collection</span>
+				</div>
+				<div class="collection-item" id="tennadance" data-rarity="variants" data-nocollection="1" style="cursor:default; display:none;">
+					<img src="assets/tennadance.gif" alt="Tenna (dance variation)">
+					<span class="name">Tenna (dance)</span>
+					<span class="count">not part of collection</span>
+				</div>
+				<div class="collection-item" id="tennadance2" data-rarity="variants" data-nocollection="1" style="cursor:default; display:none;">
+					<img src="assets/tennadance2.gif" alt="Tenna (dance variation 2)">
+					<span class="name">Tenna (dance 2)</span>
+					<span class="count">not part of collection</span>
+				</div>
+					<div class="collection-item" id="vergil" data-rarity="variants" data-nocollection="1" style="cursor:default; display:none;">
+						<img src="assets/vergil.jpeg" alt="Miyabi (vergil)">
+						<span class="name">Miyabi (vergil)</span>
+						<span class="count">not part of collection</span>
+					</div>
+				<div class="collection-item" id="analog67" data-rarity="variants" data-nocollection="1" style="cursor:default; display:none;">
+					<img src="assets/analog67.gif" alt="Analog 67 (variation)">
+					<span class="name">67 (analog)</span>
+					<span class="count">not part of collection</span>
+				</div>
+			</div>
+	</div>
+
+	<script>
+window.setCookie = function(name, value, days) {
+	const d = new Date();
+	d.setTime(d.getTime() + (days*24*60*60*1000));
+	const expires = "expires=" + d.toUTCString();
+	document.cookie = name + "=" + encodeURIComponent(String(value)) + ";" + expires + ";path=/";
+};
+
+window.getCookie = function(name) {
+	const nameEQ = name + "=";
+	const ca = document.cookie.split(';');
+	for (let i = 0; i < ca.length; i++) {
+		let c = ca[i];
+		while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+		if (c.indexOf(nameEQ) === 0) return decodeURIComponent(c.substring(nameEQ.length, c.length));
+	}
+	return null;
+};
+window.ITEM_DEFS = {
+	moyai1: { name: 'moyai', baseChance: 0.30, rarity: 'common' },
+	moyai2: { name: 'diva moyai', baseChance: 0.10, rarity: 'common' },
+	'67': { name: '67', baseChance: 0.08, rarity: 'common' },
+			rock: { name: 'Rock', baseChance: 0.12, rarity: 'common' },
+	wokendeep: { name: 'wokendeep', baseChance: 0.05, rarity: 'uncommon' },
+		biteof87: { name: 'Bite of "87"', baseChance: 0.03, rarity: 'uncommon' },
+			doge: { name: 'Doge', baseChance: 0.02, rarity: 'uncommon' },
+		hihihiha: { name: 'Hihihiha', baseChance: 0.04, rarity: 'uncommon' },
+		ladododo: { name: 'Ladododo', baseChance: 0.035, rarity: 'uncommon' },
+				moiay:   { name: 'moiay', baseChance: 0.01, rarity: 'rare' },
+			nyan:   { name: 'Nyan', baseChance: 0.006, rarity: 'rare' },
+			debussy: { name: 'Debussy', baseChance: 0.007, rarity: 'rare' },
+			sensei:  { name: 'Sensei', baseChance: 0.008, rarity: 'rare' },
+				palefork: { name: 'Palefork', baseChance: 0.009, rarity: 'rare' },
+		itstvtime: { name: 'ITS TV TIME', baseChance: 0.01, rarity: 'rare' },
+		"2bell": { name: 'New Layer 2 Bell', baseChance: 0.005, rarity: 'epic' },
+			amogus:  { name: 'Amogus', baseChance: 0.005, rarity: 'epic' },
+			shaw:    { name: 'Shaw', baseChance: 0.005, rarity: 'epic' },
+			chickenjockey: { name: 'Chicken Jockey', baseChance: 0.005, rarity: 'epic' },
+				911:     { name: '911', baseChance: 0.004, rarity: 'epic' },
+						jewoskar: { name: 'Jewoskar', baseChance: 0.001, rarity: 'legendary' },
+						diabeto: { name: 'Diabeto', baseChance: 0.005, rarity: 'epic' },
+				slander: { name: 'Slander', baseChance: 0.0006, rarity: 'legendary' },
+				area51: { name: 'Area 51', baseChance: 0.0007, rarity: 'legendary' },
+						horse: { name: 'Horse', baseChance: 0.00015, rarity: 'mythic' },
+						grow: { name: 'Grow', baseChance: 0.00015, rarity: 'mythic' },
+						sojyak: { name: 'Sojyak', baseChance: 0.00015, rarity: 'mythic' },
+			miyabi:   { name: 'Miyabi', baseChance: 0.0008, rarity: 'legendary' },
+			tenna:   { name: 'Tenna', baseChance: 0.0005, rarity: 'legendary' }
+};
+						window.ITEM_ORDER = ['moyai1','moyai2','67','rock','wokendeep','biteof87','doge','ladododo','gotosleep','hihihiha','moiay','itstvtime','palefork','nyan','debussy','sensei','2bell','amogus','shaw','chickenjockey','911','diabeto','jewoskar','slander','area51','horse','grow','sojyak','miyabi','tenna','amogus2','analog67','itspptime','tenna2','tennadance','tennadance2'];
+window.MILESTONE_DEFS = [
+
+	{ id: 'clicks_100', type: 'clicks', threshold: 100, title: '100 clicks' },
+	{ id: 'clicks_250', type: 'clicks', threshold: 250, title: '250 clicks' },
+	{ id: 'clicks_500', type: 'clicks', threshold: 500, title: '500 clicks' },
+	{ id: 'clicks_1000', type: 'clicks', threshold: 1000, title: '1000 clicks' },
+	{ id: 'clicks_2500', type: 'clicks', threshold: 2500, title: '2500 clicks' },
+	{ id: 'clicks_5000', type: 'clicks', threshold: 5000, title: '5000 clicks' },
+	{ id: 'clicks_7500', type: 'clicks', threshold: 7500, title: '7500 clicks' },
+	{ id: 'clicks_10000', type: 'clicks', threshold: 10000, title: '10000 clicks' },
+	{ id: 'popups_1', type: 'popups', threshold: 1, title: '1 popup' },
+	{ id: 'popups_10', type: 'popups', threshold: 10, title: '10 popups' },
+	{ id: 'popups_25', type: 'popups', threshold: 25, title: '25 popups' },
+	{ id: 'popups_100', type: 'popups', threshold: 100, title: '100 popups' },
+	{ id: 'popups_500', type: 'popups', threshold: 500, title: '500 popups' },
+	{ id: 'popups_1000', type: 'popups', threshold: 1000, title: '1000 popups' },
+	{ id: 'popups_2500', type: 'popups', threshold: 2500, title: '2500 popups' },
+	{ id: 'popups_5000', type: 'popups', threshold: 5000, title: '5000 popups' }
+];
+window.MILESTONE_DEFS.push({ id: 'variation_1', type: 'variations', threshold: 1, title: '1 variations' });
+window.MILESTONE_DEFS.push({ id: 'variation_5', type: 'variations', threshold: 5, title: '5 variations' });
+window.MILESTONE_DEFS.push({ id: 'variation_10', type: 'variations', threshold: 10, title: '10 variations' });
+window.MILESTONE_DEFS.push({ id: 'variation_15', type: 'variations', threshold: 15, title: '15 variations' });
+window.MILESTONE_DEFS.push({ id: 'variation_20', type: 'variations', threshold: 20, title: '20 variations' });
+window.MILESTONE_DEFS.push({ id: 'variation_25', type: 'variations', threshold: 25, title: '25 variations' });
+window.MILESTONE_DEFS.push({ id: 'variation_30', type: 'variations', threshold: 30, title: '30 variations' });
+window.MILESTONE_DEFS.push({ id: 'obtained_67_67', type: 'obtains', targetId: '67', threshold: 67, title: "67 × '67' obtained", hidden: true, weight: 1 });
+window.MILESTONE_DEFS.push({ id: 'obtained_911_911', type: 'obtains', targetId: '911', threshold: 911, title: "911 × '911' obtained", hidden: true, weight: 10 });
+window.MILESTONE_DEFS.push({ id: 'obtained_biteof87_87', type: 'obtains', targetId: 'biteof87', threshold: 87, title: "87 × 'Bite of \"87\"' obtained", hidden: true, weight: 2 });
+
+window.getRarityBoost = function() {
+	try {
+		const raw = localStorage.getItem('unlockedMilestones');
+		const unlocked = raw ? JSON.parse(raw) : {};
+		let totalWeight = 0;
+		(window.MILESTONE_DEFS || []).forEach(ms => {
+			if (ms && ms.id && unlocked[ms.id]) {
+				totalWeight += (ms.weight || 1);
+			}
+		});
+		const permLuckCount = parseInt(localStorage.getItem('upgrade_permanent_luck_count') || '0', 10) || 0;
+		totalWeight += permLuckCount;
+		return totalWeight * 0.001;
+	} catch (_) { return 0; }
+};
+window.getShopBoost = function() {
+	try {
+		const s = JSON.parse(localStorage.getItem('shop_luck_boost') || 'null');
+		if (s && s.expires && Number(s.expires) > Date.now()) {
+			return Number(s.boostAmount) || 0;
+		} else if (s && s.expires && Number(s.expires) <= Date.now()) {
+			try { localStorage.removeItem('shop_luck_boost'); } catch(_) {}
+		}
+	} catch(_) {}
+	return 0;
+};
+
+		(function(){
+			const COOKIE_NAME = 'oskar_clicker_count';
+			const EXPIRE_DAYS = 365;
+
+			const btn = document.getElementById('clickerBtn');
+			const countEl = document.getElementById('count');
+			const moyaiImage = document.getElementById('moyaiImage');
+			const moyaiSound = document.getElementById('moyaiSound');
+			const moyaiRow = document.querySelector('.moyai-row'); 
+
+			function setClickLocked(val) {
+				try {
+					if (!btn) return;
+					btn.disabled = !!val;
+					btn.style.pointerEvents = val ? 'none' : '';
+					btn.style.opacity = val ? '0.6' : '';
+				} catch(_) {}
+			}
+
+			function refreshClickLockedState() {
+				try {
+					const isVariation = !!window._variationShowing;
+					setClickLocked(isVariation);
+				} catch(_) {}
+			}
+
+			function readCount() {
+				const cookieVal = getCookie(COOKIE_NAME);
+				if (cookieVal !== null) {
+					const n = parseInt(cookieVal, 10);
+					if (Number.isFinite(n)) return n;
+				}
+				try {
+					const ls = localStorage.getItem(COOKIE_NAME);
+					if (ls !== null) {
+						const n2 = parseInt(ls, 10);
+						if (Number.isFinite(n2)) return n2;
+					}
+				} catch (_) {}
+				return 0;
+			}
+
+			function persistCount(n) {
+				try { setCookie(COOKIE_NAME, String(n), EXPIRE_DAYS); } catch(_) {}
+				try { localStorage.setItem(COOKIE_NAME, String(n)); } catch(_) {}
+			}
+
+			let count = readCount();
+			countEl.textContent = count;
+			try {
+				window.getClickCount = function() { return count; };
+				window.setClickCount = function(n) { count = Number(n) || 0; countEl.textContent = count; persistCount(count); };
+				window.adjustClickCount = function(delta) { count = Math.max(0, Number(count) + Number(delta)); countEl.textContent = count; persistCount(count); return count; };
+			} catch(_) {}
+
+			let moyaiCount = 0; 
+
+			btn.addEventListener('click', () => {
+				try {
+					const value = (window.clickValue && Number(window.clickValue)) ? Number(window.clickValue) : 1;
+					count = Math.max(0, Number(count) + value);
+				} catch(_) { count = Number(count) + 1; }
+				countEl.textContent = count;
+				persistCount(count);
+				if (typeof window.checkMilestones === 'function') window.checkMilestones();
+
+				const randomChance = Math.random();
+				let zIndexCounter = 1000;
+				const POPUP_CHANCE = 0.25;
+				if (Math.random() > POPUP_CHANCE) {
+					return;
+				}
+				const order = window.ITEM_ORDER.slice();
+				const CHANCES = {};
+				let totalEver = 0;
+				try { totalEver = parseInt(localStorage.getItem('total_clicks_ever') || '0', 10) || 0; } catch(_) { totalEver = 0; }
+				totalEver = totalEver + 1;
+				try { localStorage.setItem('total_clicks_ever', String(totalEver)); } catch(_) {}
+				const currentClicksForRestrictions = totalEver;
+				const milestoneBoost = window.getRarityBoost();
+				const shopBoost = (window.getShopBoost ? window.getShopBoost() : 0);
+				const rarityBoostScale = { common: 1.0, uncommon: 0.8, rare: 0.6, epic: 0.4, legendary: 0.2, mythic: 0.15 };
+				const rarityMultiplier = { common: 1.0, uncommon: 1.0, rare: 1.0, epic: 1.0, legendary: 1.0, mythic: 1.0/3.0 };
+				let total = 0;
+				order.forEach(id => {
+					const def = window.ITEM_DEFS[id];
+					if (!def) return;
+					if (currentClicksForRestrictions <= 30) {
+						if (!(def.rarity === 'common' || def.rarity === 'uncommon')) return;
+					}
+					let c = def.baseChance || 0;
+					const scale = rarityBoostScale[def.rarity] || 0;
+					if (scale > 0 && milestoneBoost) c = c + (milestoneBoost * scale);
+					if (scale > 0 && shopBoost && ['epic','legendary','mythic'].indexOf(def.rarity) >= 0) {
+						c = c + (shopBoost * scale);
+					}
+					c = c * (rarityMultiplier[def.rarity] || 1);
+					CHANCES[id] = c;
+					total += c;
+				});
+				let running = 0;
+				let chosen = null;
+				for (let id of order) {
+					running += (CHANCES[id] || 0) / (total || 1);
+					if (randomChance < running) { chosen = id; break; }
+				}
+
+				if (!chosen) return; 
+
+				const playAndShow = (id, imgSrc, soundSrc, durationMs, nameOverride, opts) => {
+					let popupSettings = {};
+					try { popupSettings = JSON.parse(localStorage.getItem('popupSettings') || '{}'); } catch(_) { popupSettings = {}; }
+					opts = opts || {};
+					const hidden = !!popupSettings[id];
+					if (!opts.dev) {
+						if (typeof window.unlockMoyai === 'function') {
+							const canonicalName = (window.ITEM_DEFS && window.ITEM_DEFS[id] && window.ITEM_DEFS[id].name) ? window.ITEM_DEFS[id].name : (nameOverride || id);
+							window.unlockMoyai(id, canonicalName, CHANCES[id]);
+						}
+						if (hidden) return;
+					}
+
+					const el = document.createElement('img');
+					try {
+						const cb = (img) => {
+							if (typeof img === 'string' && /\.gif(\?.*)?$/i.test(img)) {
+								return img + (img.indexOf('?') >= 0 ? '&' : '?') + '_=' + Date.now();
+							}
+							return img;
+						};
+						el.src = (typeof imgSrc === 'string') ? cb(imgSrc) : imgSrc;
+					} catch(_) { el.src = imgSrc; }
+					el.alt = nameOverride || (window.ITEM_DEFS && window.ITEM_DEFS[id] && window.ITEM_DEFS[id].name) || id;
+					el.style.position = 'fixed';
+					el.style.top = '50%';
+					el.style.left = '50%';
+					el.style.transform = 'translate(-50%, -50%)';
+					if (id === 'jewoskar') {
+						el.style.width = '100vw';
+						el.style.height = 'auto';
+						el.style.maxHeight = '100vh';
+						el.style.objectFit = 'contain';
+					} else {
+						el.style.width = '70%';
+						el.style.height = 'auto';
+					}
+					const defForZ = (window.ITEM_DEFS && window.ITEM_DEFS[id]) || {};
+					const rarityZBase = { common: 1000, uncommon: 1100, rare: 1200, epic: 1300, legendary: 1400 };
+					if (!window._oskarZIndexCounter) window._oskarZIndexCounter = 0;
+					el.style.zIndex = (rarityZBase[defForZ.rarity] || 1000) + (++window._oskarZIndexCounter);
+					el.style.opacity = '0.95';
+					el.style.pointerEvents = 'none';
+					el.style.transition = 'opacity 0.4s ease-out';
+					document.body.appendChild(el);
+					try {
+						if (!window._activePopups) window._activePopups = [];
+						if (window._activePopups.indexOf(el) === -1) window._activePopups.push(el);
+					} catch(_) {}
+					refreshClickLockedState();
+
+					if (soundSrc) {
+						const snd = new Audio(soundSrc);
+						snd.play().catch(()=>{});
+						try {
+							el._popupAudio = snd;
+						} catch(_) {}
+					}
+					setTimeout(() => {
+						el.style.opacity = '0';
+						setTimeout(() => {
+							try {
+								if (el._popupAudio) { el._popupAudio.pause(); try { el._popupAudio.currentTime = 0; } catch(_) {} delete el._popupAudio; }
+								if (window._activePopups) {
+									let idx;
+									while ((idx = window._activePopups.indexOf(el)) >= 0) {
+										window._activePopups.splice(idx,1);
+									}
+								}
+								refreshClickLockedState();
+							} catch(_) {}
+							try { el.remove(); } catch(_) {}
+						}, 400);
+					}, durationMs);
+				};
+				try { window.playAndShow = playAndShow; } catch(_) {}
+				try { const ownedUp = parseInt(localStorage.getItem('upgrade_click_value_count')||'0',10) || 0; window.clickValue = 1 + ownedUp; } catch(_) { window.clickValue = 1; }
+				function showFirstTimeVariation(opts) {
+					try {
+						if (!opts) return Promise.resolve();
+						if (window._variationShowing) return Promise.resolve();
+						try { if (window.closeAllMenus) window.closeAllMenus(); } catch(_) {}
+						try { const sm = document.getElementById('slidingMenu'); if (sm) sm.classList.remove('open'); } catch(_) {}
+						try {
+							if (window._activePopups && Array.isArray(window._activePopups)) {
+								window._activePopups.forEach(el => {
+									try { if (el._popupAudio) { el._popupAudio.pause(); try { el._popupAudio.currentTime = 0; } catch(_) {} } } catch(_) {}
+									try { el.remove(); } catch(_) {}
+								});
+								window._activePopups = [];
+							}
+							document.querySelectorAll('img').forEach(img => {
+								try { if (img._hoverAudio) { img._hoverAudio.pause(); try { img._hoverAudio.currentTime = 0; } catch(_) {} delete img._hoverAudio; } } catch(_) {}
+							});
+							document.querySelectorAll('audio').forEach(a => { try { a.pause(); try { a.currentTime = 0; } catch(_) {} } catch(_) {} });
+						} catch(_) {}
+						window._variationShowing = true;
+						refreshClickLockedState();
+						const animationGif = opts.animationGif || 'assets/animation.gif';
+						const variantIntro = opts.variantIntro || null; 
+						const variantImg = opts.variantImg;
+						const variantSound = opts.variantSound;
+						const animationDuration = typeof opts.animationDuration === 'number' ? opts.animationDuration : 2000;
+						const variantDisplayDuration = typeof opts.variantDisplayDuration === 'number' ? opts.variantDisplayDuration : 2000;
+						return new Promise(resolve => {
+							const overlay = document.createElement('div');
+							overlay.id = 'variationOverlay';
+							overlay.style.position = 'fixed';
+							overlay.style.left = '0';
+							overlay.style.top = '0';
+							overlay.style.right = '0';
+							overlay.style.bottom = '0';
+							overlay.style.zIndex = 99999;
+							overlay.style.background = 'white';
+							overlay.style.opacity = '0';
+							overlay.style.transition = 'opacity 600ms ease, background 300ms linear';
+							overlay.style.display = 'flex';
+							overlay.style.alignItems = 'center';
+							overlay.style.justifyContent = 'center';
+							overlay.style.pointerEvents = 'none';
+							document.body.appendChild(overlay);
+							requestAnimationFrame(() => { overlay.style.opacity = '1'; });
+							setTimeout(() => {
+								overlay.style.background = 'black';
+								setTimeout(() => {
+									const anim = document.createElement('img');
+									try {
+										if (/\.gif(\?.*)?$/i.test(animationGif)) anim.src = animationGif + '?_=' + Date.now(); else anim.src = animationGif;
+									} catch(_) { anim.src = animationGif; }
+									anim.alt = 'animation';
+									anim.style.position = 'absolute';
+									anim.style.left = '0';
+									anim.style.top = '0';
+									anim.style.width = '100%';
+									anim.style.height = '100%';
+									anim.style.objectFit = 'cover';
+									anim.style.display = 'block';
+									overlay.appendChild(anim);
+									setTimeout(() => {
+										try { anim.remove(); } catch(_) {}
+										let videoEl = null;
+										let imgEl = null;
+										let audioEl = null;
+										let skipBtn = null;
+										let skipShowTimeout = null;
+										let variantEndTimeout = null;
+										const clearVariantTimers = () => {
+											try { if (skipShowTimeout) { clearTimeout(skipShowTimeout); skipShowTimeout = null; } } catch(_) {}
+											try { if (variantEndTimeout) { clearTimeout(variantEndTimeout); variantEndTimeout = null; } } catch(_) {}
+										};
+										const finishVariantCleanup = () => {
+											try { if (audioEl) { audioEl.pause(); try { audioEl.currentTime = 0; } catch(_) {} } } catch(_) {}
+											try { if (videoEl) videoEl.remove(); } catch(_) {}
+											try { if (imgEl) imgEl.remove(); } catch(_) {}
+											try { if (skipBtn) skipBtn.remove(); } catch(_) {}
+											clearVariantTimers();
+										};
+										const finishVariantEarly = () => {
+											finishVariantCleanup();
+											overlay.style.opacity = '0';
+											setTimeout(() => { try { overlay.remove(); } catch(_) {} window._variationShowing = false; refreshClickLockedState(); resolve(); }, 400);
+										};
+										if (opts && opts.skip) {
+											skipBtn = document.createElement('button');
+											skipBtn.textContent = 'Skip';
+											skipBtn.style.position = 'absolute';
+											skipBtn.style.top = '12px';
+											skipBtn.style.right = '12px';
+											skipBtn.style.display = 'none';
+											skipBtn.style.zIndex = 100000;
+											skipBtn.style.pointerEvents = 'auto';
+											skipBtn.style.padding = '8px 12px';
+											skipBtn.style.borderRadius = '6px';
+											skipBtn.style.background = 'rgba(255,255,255,0.85)';
+											skipBtn.style.border = 'none';
+											skipBtn.style.cursor = 'pointer';
+											skipBtn.addEventListener('click', () => { finishVariantEarly(); });
+											overlay.appendChild(skipBtn);
+											const delay = (typeof opts.skipDelayMs === 'number') ? opts.skipDelayMs : 3000;
+											skipShowTimeout = setTimeout(() => { try { if (skipBtn) skipBtn.style.display = 'flex'; } catch(_) {} }, delay);
+										}
+										if (variantIntro) {
+											videoEl = document.createElement('video');
+											videoEl.src = variantIntro + (variantIntro.indexOf('?') >= 0 ? '&' : '?') + '_=' + Date.now();
+											videoEl.autoplay = true;
+											videoEl.playsInline = true;
+											videoEl.style.position = 'absolute';
+											videoEl.style.left = '0';
+											videoEl.style.top = '0';
+											videoEl.style.width = '100%';
+											videoEl.style.height = '100%';
+											videoEl.style.objectFit = 'cover';
+											videoEl.style.display = 'block';
+											videoEl.style.opacity = '1';
+											videoEl.muted = false;
+											overlay.appendChild(videoEl);
+											const onVideoEnd = () => {
+												try { videoEl.style.transition = 'opacity 400ms ease'; videoEl.style.opacity = '0'; } catch(_) {}
+												imgEl = document.createElement('img');
+												try {
+													if (typeof variantImg === 'string' && /\.gif(\?.*)?$/i.test(variantImg)) imgEl.src = variantImg + '?_=' + Date.now(); else imgEl.src = variantImg;
+												} catch(_) { imgEl.src = variantImg; }
+												imgEl.alt = 'variation';
+												if (opts && opts.variantLarge) {
+													imgEl.style.position = 'absolute';
+													imgEl.style.left = '0';
+													imgEl.style.top = '0';
+													imgEl.style.width = '100%';
+													imgEl.style.height = '100%';
+													imgEl.style.objectFit = 'cover';
+													imgEl.style.display = 'block';
+												} else {
+													imgEl.style.maxWidth = '70vw';
+													imgEl.style.maxHeight = '70vh';
+													imgEl.style.objectFit = 'contain';
+												}
+												imgEl.style.opacity = '0';
+												imgEl.style.transition = 'opacity 400ms ease';
+												overlay.appendChild(imgEl);
+												setTimeout(() => {
+													try { imgEl.style.opacity = '1'; } catch(_) {}
+													setTimeout(() => { try { if (videoEl) videoEl.remove(); } catch(_) {} }, 420);
+												}, 60);
+												if (variantSound) {
+													audioEl = new Audio(variantSound);
+													audioEl.play().catch(()=>{});
+													const onAudioEnd = () => {
+														try { audioEl.removeEventListener('ended', onAudioEnd); } catch(_) {}
+														finishVariantCleanup();
+														overlay.style.opacity = '0';
+														setTimeout(() => { try { overlay.remove(); } catch(_) {} window._variationShowing = false; refreshClickLockedState(); resolve(); }, 400);
+													};
+													audioEl.addEventListener('ended', onAudioEnd);
+													variantEndTimeout = setTimeout(() => { try { if (audioEl) audioEl.pause(); } catch(_) {} try { audioEl && audioEl.removeEventListener && audioEl.removeEventListener('ended', onAudioEnd); } catch(_) {} finishVariantCleanup(); overlay.style.opacity = '0'; setTimeout(() => { try { overlay.remove(); } catch(_) {} window._variationShowing = false; refreshClickLockedState(); resolve(); }, 400); }, Math.max(variantDisplayDuration, 8000));
+												}
+											};
+											videoEl.addEventListener('ended', onVideoEnd);
+											videoEl.addEventListener('error', () => { try { onVideoEnd(); } catch(_) {} });
+										} else {
+											imgEl = document.createElement('img');
+											try {
+												if (typeof variantImg === 'string' && /\.gif(\?.*)?$/i.test(variantImg)) imgEl.src = variantImg + '?_=' + Date.now(); else imgEl.src = variantImg;
+											} catch(_) { imgEl.src = variantImg; }
+											imgEl.alt = 'variation';
+											if (opts && opts.variantLarge) {
+												imgEl.style.position = 'absolute';
+												imgEl.style.left = '0';
+												imgEl.style.top = '0';
+												imgEl.style.width = '100%';
+												imgEl.style.height = '100%';
+												imgEl.style.objectFit = 'cover';
+												imgEl.style.display = 'block';
+											} else {
+												imgEl.style.maxWidth = '70vw';
+												imgEl.style.maxHeight = '70vh';
+												imgEl.style.objectFit = 'contain';
+											}
+											overlay.appendChild(imgEl);
+											if (variantSound) {
+												audioEl = new Audio(variantSound);
+												audioEl.play().catch(()=>{});
+												const onAudioEnd2 = () => {
+													try { audioEl.removeEventListener('ended', onAudioEnd2); } catch(_) {}
+													finishVariantCleanup();
+													overlay.style.opacity = '0';
+													setTimeout(() => { try { overlay.remove(); } catch(_) {} window._variationShowing = false; refreshClickLockedState(); resolve(); }, 400);
+												};
+												audioEl.addEventListener('ended', onAudioEnd2);
+												variantEndTimeout = setTimeout(() => { try { if (audioEl) audioEl.pause(); } catch(_) {} try { audioEl && audioEl.removeEventListener && audioEl.removeEventListener('ended', onAudioEnd2); } catch(_) {} finishVariantCleanup(); overlay.style.opacity = '0'; setTimeout(() => { try { overlay.remove(); } catch(_) {} window._variationShowing = false; refreshClickLockedState(); resolve(); }, 400); }, variantDisplayDuration);
+											} else {
+												variantEndTimeout = setTimeout(() => { finishVariantCleanup(); overlay.style.opacity = '0'; setTimeout(() => { try { overlay.remove(); } catch(_) {} window._variationShowing = false; refreshClickLockedState(); resolve(); }, 400); }, variantDisplayDuration);
+											}
+										}
+									}, animationDuration);
+								}, 300);
+							}, 600);
+						});
+					} catch(_) { window._variationShowing = false; return Promise.resolve(); }
+					}
+					try { window.showFirstTimeVariation = showFirstTimeVariation; } catch(_) {}
+					try {
+						window.closeAllMenus = function() {
+							['collectionMenu','shopPanel','upgradesPanel','milestonePanel','popupSettingsPanel','devTestPanel'].forEach(id => {
+								try { const el = document.getElementById(id); if (el) el.style.display = 'none'; } catch(_) {}
+							});
+						};
+					} catch(_) {}
+					try {
+						window.showPanel = function(id, display) {
+							try { if (window.closeAllMenus) window.closeAllMenus(); } catch(_) {}
+							display = display || 'block';
+							try {
+								console.debug && console.debug('showPanel called', id, display);
+						const el = document.getElementById(id);
+						if (!el) return;
+						try { el.style.position = 'fixed'; } catch(_) {}
+						try { el.style.zIndex = 200000; } catch(_) {}
+						try { el.style.pointerEvents = 'auto'; } catch(_) {}
+						el.style.display = display;
+							} catch(_) {}
+						};
+					} catch(_) {}
+				switch (chosen) {
+					case 'moiay': playAndShow('moiay','assets/moiay.jpeg','assets/moiay.mp3',2000); break;
+					case 'itstvtime': {
+						const isVar = (currentClicksForRestrictions > 60) && (Math.random() < 0.05);
+
+							if (isVar) {
+							try {
+								const cur = parseInt(localStorage.getItem('variationCount')||'0',10) || 0;
+								localStorage.setItem('variationCount', String(cur+1));
+								if (typeof window.checkMilestones === 'function') window.checkMilestones();
+							} catch(_) {}
+							try {
+								const firstKey = 'variation_shown_itstvtime';
+								const already = localStorage.getItem(firstKey);
+								if (!already) {
+									if (typeof window.unlockMoyai === 'function') window.unlockMoyai('itstvtime', window.ITEM_DEFS['itstvtime'].name, CHANCES['itstvtime']);
+									showFirstTimeVariation({ animationGif: 'assets/animation.gif', variantImg: 'assets/itspptime.gif', variantSound: 'assets/itspptime.mp3', animationDuration: 2300, variantDisplayDuration: 4200 }).then(() => {
+										try { localStorage.setItem(firstKey, '1'); } catch(_) {}
+										try { if (typeof updateCollection === 'function') updateCollection(); } catch(_) {}
+									});
+								} else {
+									try {
+										const raw = getCookie('unlockedMoyais') || localStorage.getItem('unlockedMoyais') || '{}';
+										let unlockedObj = {};
+										try { unlockedObj = JSON.parse(raw || '{}'); } catch(_) { unlockedObj = {}; }
+										if (!Object.prototype.hasOwnProperty.call(unlockedObj, 'itstvtime')) {
+											if (typeof window.unlockMoyai === 'function') window.unlockMoyai('itstvtime', window.ITEM_DEFS['itstvtime'].name, CHANCES['itstvtime']);
+											playAndShow('itstvtime','assets/itspptime.gif','assets/itspptime.mp3',Math.min(6200,5000), 'ITS TV TIME (variant)', {dev:true});
+										} else {
+											playAndShow('itstvtime','assets/itspptime.gif','assets/itspptime.mp3',Math.min(6200,5000), 'ITS TV TIME (variant)');
+										}
+									} catch(_) {
+										playAndShow('itstvtime','assets/itspptime.gif','assets/itspptime.mp3',Math.min(6200,5000), 'ITS TV TIME (variant)');
+									}
+								}
+							} catch(_) {
+								try {
+									const raw = getCookie('unlockedMoyais') || localStorage.getItem('unlockedMoyais') || '{}';
+									let unlockedObj = {};
+									try { unlockedObj = JSON.parse(raw || '{}'); } catch(_) { unlockedObj = {}; }
+									if (!Object.prototype.hasOwnProperty.call(unlockedObj, 'itstvtime')) {
+										if (typeof window.unlockMoyai === 'function') window.unlockMoyai('itstvtime', window.ITEM_DEFS['itstvtime'].name, CHANCES['itstvtime']);
+											playAndShow('itstvtime','assets/itspptime.gif','assets/itspptime.mp3',Math.min(6200,5000), 'ITS TV TIME (variant)', {dev:true});
+									} else {
+											playAndShow('itstvtime','assets/itspptime.gif','assets/itspptime.mp3',Math.min(6200,5000), 'ITS TV TIME (variant)');
+									}
+								} catch(_) {
+														playAndShow('itstvtime','assets/itspptime.gif','assets/itspptime.mp3',Math.min(6200,5000), 'ITS TV TIME (variant)');
+								}
+							}
+						} else {
+							playAndShow('itstvtime','assets/itstvtime.gif','assets/itstvtime.mp3',3500);
+						}
+					} break;
+					case 'moyai2': playAndShow('moyai2','assets/moyai2.jpeg','assets/moyai2.mp3',2500); break;
+					case 'wokendeep': playAndShow('wokendeep','assets/wokendeep.jpeg','assets/wokendeep.mp3',1600); break;
+					case 'biteof87': playAndShow('biteof87','assets/biteof87.gif','assets/biteof87.mp3',2000); break;
+					case 'hihihiha': playAndShow('hihihiha','assets/hihihiha.gif','assets/hihihiha.mp3',1800); break;
+					case 'ladododo': {
+						const isVar = (currentClicksForRestrictions > 60) && (Math.random() < 0.10);
+
+						if (isVar) {
+							try {
+								const cur = parseInt(localStorage.getItem('variationCount')||'0',10) || 0;
+								localStorage.setItem('variationCount', String(cur+1));
+								if (typeof window.checkMilestones === 'function') window.checkMilestones();
+							} catch(_) {}
+							try {
+								const firstKey = 'variation_shown_ladododo';
+								const already = localStorage.getItem(firstKey);
+								if (!already) {
+									if (typeof window.unlockMoyai === 'function') window.unlockMoyai('ladododo', window.ITEM_DEFS['ladododo'].name, CHANCES['ladododo']);
+									showFirstTimeVariation({ animationGif: 'assets/animation.gif', variantImg: 'assets/gotosleep.gif', variantSound: 'assets/gotosleep.mp3', animationDuration: 2000, variantDisplayDuration: 6000 }).then(() => {
+										try { localStorage.setItem(firstKey, '1'); } catch(_) {}
+										try { if (typeof updateCollection === 'function') updateCollection(); } catch(_) {}
+									});
+								} else {
+									try {
+										const raw = getCookie('unlockedMoyais') || localStorage.getItem('unlockedMoyais') || '{}';
+										let unlockedObj = {};
+										try { unlockedObj = JSON.parse(raw || '{}'); } catch(_) { unlockedObj = {}; }
+										if (!Object.prototype.hasOwnProperty.call(unlockedObj, 'ladododo')) {
+											if (typeof window.unlockMoyai === 'function') window.unlockMoyai('ladododo', window.ITEM_DEFS['ladododo'].name, CHANCES['ladododo']);
+											playAndShow('ladododo', (localStorage.getItem('variation_shown_ladododo') ? 'assets/gotosleep2.gif' : 'assets/gotosleep.gif'), (localStorage.getItem('variation_shown_ladododo') ? 'assets/gotosleep2.mp3' : 'assets/gotosleep.mp3'), Math.min(2000,5000), 'Ladododo (gotosleep)', {dev:true});
+										} else {
+											playAndShow('ladododo', (localStorage.getItem('variation_shown_ladododo') ? 'assets/gotosleep2.gif' : 'assets/gotosleep.gif'), (localStorage.getItem('variation_shown_ladododo') ? 'assets/gotosleep2.mp3' : 'assets/gotosleep.mp3'), Math.min(2000,5000), 'Ladododo (gotosleep)');
+										}
+									} catch(_) {
+										playAndShow('ladododo', (localStorage.getItem('variation_shown_ladododo') ? 'assets/gotosleep2.gif' : 'assets/gotosleep.gif'), (localStorage.getItem('variation_shown_ladododo') ? 'assets/gotosleep2.mp3' : 'assets/gotosleep.mp3'), Math.min(2000,5000), 'Ladododo (gotosleep)');
+									}
+								}
+							} catch(_) {
+								try { if (typeof window.unlockMoyai === 'function') window.unlockMoyai('ladododo', window.ITEM_DEFS['ladododo'].name, CHANCES['ladododo']); } catch(_) {}
+								playAndShow('ladododo', (localStorage.getItem('variation_shown_ladododo') ? 'assets/gotosleep2.gif' : 'assets/gotosleep.gif'), (localStorage.getItem('variation_shown_ladododo') ? 'assets/gotosleep2.mp3' : 'assets/gotosleep.mp3'), Math.min(2000,5000), 'Ladododo (gotosleep)');
+							}
+						} else {
+							playAndShow('ladododo','assets/ladododo.gif','assets/ladododo.mp3',1600);
+						}
+					} break;
+					case '67': {
+						const isVar67 = (currentClicksForRestrictions > 60) && (Math.random() < 0.05);
+
+						if (isVar67) {
+							try {
+								const cur = parseInt(localStorage.getItem('variationCount')||'0',10) || 0;
+								localStorage.setItem('variationCount', String(cur+1));
+								if (typeof window.checkMilestones === 'function') window.checkMilestones();
+							} catch(_) {}
+							try {
+								const firstKey = 'variation_shown_67';
+								const already = localStorage.getItem(firstKey);
+								if (!already) {
+									if (typeof window.unlockMoyai === 'function') window.unlockMoyai('67', window.ITEM_DEFS['67'].name, CHANCES['67']);
+									showFirstTimeVariation({ animationGif: 'assets/animation.gif', variantImg: 'assets/analog67.gif', variantSound: 'assets/analog67.mp3', animationDuration: 2000, variantDisplayDuration: 5000 }).then(() => {
+										try { localStorage.setItem(firstKey, '1'); } catch(_) {}
+										try { if (typeof updateCollection === 'function') updateCollection(); } catch(_) {}
+									});
+								} else {
+									try {
+										const raw = getCookie('unlockedMoyais') || localStorage.getItem('unlockedMoyais') || '{}';
+										let unlockedObj = {};
+										try { unlockedObj = JSON.parse(raw || '{}'); } catch(_) { unlockedObj = {}; }
+										if (!Object.prototype.hasOwnProperty.call(unlockedObj, '67')) {
+											if (typeof window.unlockMoyai === 'function') window.unlockMoyai('67', window.ITEM_DEFS['67'].name, CHANCES['67']);
+											playAndShow('67','assets/analog67.gif','assets/analog67.mp3', Math.min(5000,5000), '67 (analog)', {dev:true});
+										} else {
+											playAndShow('67','assets/analog67.gif','assets/analog67.mp3', Math.min(5000,5000), '67 (analog)');
+										}
+									} catch(_) {
+										playAndShow('67','assets/analog67.gif','assets/analog67.mp3', Math.min(5000,5000), '67 (analog)');
+									}
+								}
+							} catch(_) {
+								try { if (typeof window.unlockMoyai === 'function') window.unlockMoyai('67', window.ITEM_DEFS['67'].name, CHANCES['67']); } catch(_) {}
+								playAndShow('67','assets/analog67.gif','assets/analog67.mp3', Math.min(3000,5000), '67 (analog)');
+							}
+						} else {
+							playAndShow('67','assets/67.jpeg','assets/67.mp3',1500);
+						}
+					} break;
+					case '2bell': playAndShow('2bell','assets/2bell.gif','assets/2bell.mp3',3000); break;
+					case 'amogus': {
+						const isVar = (currentClicksForRestrictions > 60) && (Math.random() < 0.10);
+
+						if (isVar) {
+							try {
+								const cur = parseInt(localStorage.getItem('variationCount')||'0',10) || 0;
+								localStorage.setItem('variationCount', String(cur+1));
+								if (typeof window.checkMilestones === 'function') window.checkMilestones();
+							} catch(_) {}
+							try {
+								const firstKey = 'variation_shown_amogus';
+								const already = localStorage.getItem(firstKey);
+								if (!already) {
+									if (typeof window.unlockMoyai === 'function') window.unlockMoyai('amogus', window.ITEM_DEFS['amogus'].name, CHANCES['amogus']);
+									showFirstTimeVariation({ animationGif: 'assets/animation.gif', variantImg: 'assets/amogus2.jpeg', variantSound: 'assets/amogus2.mp3', animationDuration: 2000 }).then(() => {
+										try { localStorage.setItem(firstKey, '1'); } catch(_) {}
+										try { if (typeof updateCollection === 'function') updateCollection(); } catch(_) {}
+									});
+								} else {
+									try {
+										const raw = getCookie('unlockedMoyais') || localStorage.getItem('unlockedMoyais') || '{}';
+										let unlockedObj = {};
+										try { unlockedObj = JSON.parse(raw || '{}'); } catch(_) { unlockedObj = {}; }
+										if (!Object.prototype.hasOwnProperty.call(unlockedObj, 'amogus')) {
+											if (typeof window.unlockMoyai === 'function') window.unlockMoyai('amogus', window.ITEM_DEFS['amogus'].name, CHANCES['amogus']);
+											playAndShow('amogus','assets/amogus2.jpeg','assets/amogus2.mp3',2000, 'Amogus (variation)', {dev:true});
+										} else {
+											playAndShow('amogus','assets/amogus2.jpeg','assets/amogus2.mp3',2000, 'Amogus (variation)');
+										}
+									} catch(_) {
+										playAndShow('amogus','assets/amogus2.jpeg','assets/amogus2.mp3',2000, 'Amogus (variation)');
+									}
+								}
+							} catch(_) {
+								try {
+									const raw = getCookie('unlockedMoyais') || localStorage.getItem('unlockedMoyais') || '{}';
+									let unlockedObj = {};
+									try { unlockedObj = JSON.parse(raw || '{}'); } catch(_) { unlockedObj = {}; }
+									if (!Object.prototype.hasOwnProperty.call(unlockedObj, 'amogus')) {
+										if (typeof window.unlockMoyai === 'function') window.unlockMoyai('amogus', window.ITEM_DEFS['amogus'].name, CHANCES['amogus']);
+										playAndShow('amogus','assets/amogus2.jpeg','assets/amogus2.mp3',2000, 'Amogus (variation)', {dev:true});
+									} else {
+										playAndShow('amogus','assets/amogus2.jpeg','assets/amogus2.mp3',2000, 'Amogus (variation)');
+									}
+								} catch(_) {
+									playAndShow('amogus','assets/amogus2.jpeg','assets/amogus2.mp3',2000, 'Amogus (variation)');
+								}
+							}
+						} else {
+							playAndShow('amogus','assets/amogus.jpeg','assets/amogus.mp3',2000);
+						}
+					} break;
+					case 'tenna': {
+						const r = Math.random();
+						const allowTennaVariants = (currentClicksForRestrictions > 60);
+						if (allowTennaVariants && r < 0.10) {
+
+							try {
+								const cur = parseInt(localStorage.getItem('variationCount')||'0',10) || 0;
+								localStorage.setItem('variationCount', String(cur+1));
+								if (typeof window.checkMilestones === 'function') window.checkMilestones();
+							} catch(_) {}
+							try {
+								const firstKey = 'variation_shown_tenna2';
+								const already = localStorage.getItem(firstKey);
+								if (!already) {
+									if (typeof window.unlockMoyai === 'function') window.unlockMoyai('tenna', window.ITEM_DEFS['tenna'].name, CHANCES['tenna']);
+									showFirstTimeVariation({ animationGif: 'assets/animation.gif', variantImg: 'assets/tenna2.gif', variantSound: 'assets/tenna2.mp3', animationDuration: 2000, variantDisplayDuration: 40000, skip: true, skipDelayMs: 3000 }).then(() => {
+										try { localStorage.setItem(firstKey, '1'); } catch(_) {}
+										try { if (typeof updateCollection === 'function') updateCollection(); } catch(_) {}
+									});
+								} else {
+									try {
+										const raw = getCookie('unlockedMoyais') || localStorage.getItem('unlockedMoyais') || '{}';
+										let unlockedObj = {};
+										try { unlockedObj = JSON.parse(raw || '{}'); } catch(_) { unlockedObj = {}; }
+										if (!Object.prototype.hasOwnProperty.call(unlockedObj, 'tenna')) {
+											if (typeof window.unlockMoyai === 'function') window.unlockMoyai('tenna', window.ITEM_DEFS['tenna'].name, CHANCES['tenna']);
+											playAndShow('tenna','assets/tenna2.gif','assets/tenna2.mp3',Math.min(40000,5000), 'Tenna (variation)', {dev:true});
+										} else {
+											playAndShow('tenna','assets/tenna2.gif','assets/tenna2.mp3',Math.min(40000,5000), 'Tenna (variation)');
+										}
+									} catch(_) {
+										playAndShow('tenna','assets/tenna2.gif','assets/tenna2.mp3',Math.min(40000,5000), 'Tenna (variation)');
+									}
+								}
+							} catch(_) {
+								try {
+									const raw = getCookie('unlockedMoyais') || localStorage.getItem('unlockedMoyais') || '{}';
+									let unlockedObj = {};
+									try { unlockedObj = JSON.parse(raw || '{}'); } catch(_) { unlockedObj = {}; }
+									if (!Object.prototype.hasOwnProperty.call(unlockedObj, 'tenna')) {
+										if (typeof window.unlockMoyai === 'function') window.unlockMoyai('tenna', window.ITEM_DEFS['tenna'].name, CHANCES['tenna']);
+										playAndShow('tenna','assets/tenna2.gif','assets/tenna2.mp3',Math.min(40000,5000), 'Tenna (variation)', {dev:true});
+									} else {
+										playAndShow('tenna','assets/tenna2.gif','assets/tenna2.mp3',Math.min(40000,5000), 'Tenna (variation)');
+									}
+								} catch(_) {
+									playAndShow('tenna','assets/tenna2.gif','assets/tenna2.mp3',Math.min(40000,5000), 'Tenna (variation)');
+								}
+							}
+						} else if (allowTennaVariants && r < 0.20) {
+							try {
+								const cur = parseInt(localStorage.getItem('variationCount')||'0',10) || 0;
+								localStorage.setItem('variationCount', String(cur+1));
+								if (typeof window.checkMilestones === 'function') window.checkMilestones();
+							} catch(_) {}
+							try {
+								const firstKey = 'variation_shown_tennadance';
+								const already = localStorage.getItem(firstKey);
+								if (!already) {
+									if (typeof window.unlockMoyai === 'function') window.unlockMoyai('tenna', window.ITEM_DEFS['tenna'].name, CHANCES['tenna']);
+									showFirstTimeVariation({ animationGif: 'assets/animation.gif', variantImg: 'assets/tennadance.gif', variantSound: 'assets/tennadance.mp3', animationDuration: 2000, variantDisplayDuration: 14000, skip: true, skipDelayMs: 3000 }).then(() => {
+										try { localStorage.setItem(firstKey, '1'); } catch(_) {}
+										try { if (typeof updateCollection === 'function') updateCollection(); } catch(_) {}
+									});
+								} else {
+									try {
+										const raw = getCookie('unlockedMoyais') || localStorage.getItem('unlockedMoyais') || '{}';
+										let unlockedObj = {};
+										try { unlockedObj = JSON.parse(raw || '{}'); } catch(_) { unlockedObj = {}; }
+										if (!Object.prototype.hasOwnProperty.call(unlockedObj, 'tenna')) {
+											if (typeof window.unlockMoyai === 'function') window.unlockMoyai('tenna', window.ITEM_DEFS['tenna'].name, CHANCES['tenna']);
+											playAndShow('tenna','assets/tennadance.gif','assets/tennadance.mp3',Math.min(14000,5000), 'Tenna (dance)', {dev:true});
+										} else {
+											playAndShow('tenna','assets/tennadance.gif','assets/tennadance.mp3',Math.min(14000,5000), 'Tenna (dance)');
+										}
+									} catch(_) {
+										playAndShow('tenna','assets/tennadance.gif','assets/tennadance.mp3',Math.min(14000,5000), 'Tenna (dance)');
+									}
+								}
+							} catch(_) {
+								try {
+									const raw = getCookie('unlockedMoyais') || localStorage.getItem('unlockedMoyais') || '{}';
+									let unlockedObj = {};
+									try { unlockedObj = JSON.parse(raw || '{}'); } catch(_) { unlockedObj = {}; }
+									if (!unlockedObj['tenna']) {
+										if (typeof window.unlockMoyai === 'function') window.unlockMoyai('tenna', window.ITEM_DEFS['tenna'].name, CHANCES['tenna']);
+										playAndShow('tenna','assets/tennadance.gif','assets/tennadance.mp3',Math.min(14000,5000), 'Tenna (dance)', {dev:true});
+									} else {
+										playAndShow('tenna','assets/tennadance.gif','assets/tennadance.mp3',Math.min(14000,5000), 'Tenna (dance)');
+									}
+								} catch(_) {
+									playAndShow('tenna','assets/tennadance.gif','assets/tennadance.mp3',Math.min(14000,5000), 'Tenna (dance)');
+								}
+							}
+						} else if (allowTennaVariants && r < 0.25) {
+							try {
+								const cur = parseInt(localStorage.getItem('variationCount')||'0',10) || 0;
+								localStorage.setItem('variationCount', String(cur+1));
+								if (typeof window.checkMilestones === 'function') window.checkMilestones();
+							} catch(_) {}
+							try {
+								const firstKey = 'variation_shown_tennadance2';
+								const already = localStorage.getItem(firstKey);
+								if (!already) {
+									if (typeof window.unlockMoyai === 'function') window.unlockMoyai('tenna', window.ITEM_DEFS['tenna'].name, CHANCES['tenna']);
+									showFirstTimeVariation({ animationGif: 'assets/animation.gif', variantImg: 'assets/tennadance2.gif', variantSound: 'assets/tennadance2.mp3', animationDuration: 2000, variantDisplayDuration: 13000, skip: true, skipDelayMs: 3000 }).then(() => {
+										try { localStorage.setItem(firstKey, '1'); } catch(_) {}
+										try { if (typeof updateCollection === 'function') updateCollection(); } catch(_) {}
+									});
+								} else {
+									try {
+										const raw = getCookie('unlockedMoyais') || localStorage.getItem('unlockedMoyais') || '{}';
+										let unlockedObj = {};
+										try { unlockedObj = JSON.parse(raw || '{}'); } catch(_) { unlockedObj = {}; }
+										if (!Object.prototype.hasOwnProperty.call(unlockedObj, 'tenna')) {
+											if (typeof window.unlockMoyai === 'function') window.unlockMoyai('tenna', window.ITEM_DEFS['tenna'].name, CHANCES['tenna']);
+											playAndShow('tenna','assets/tennadance2.gif','assets/tennadance2.mp3',Math.min(13000,5000), 'Tenna (dance 2)', {dev:true});
+										} else {
+											playAndShow('tenna','assets/tennadance2.gif','assets/tennadance2.mp3',Math.min(13000,5000), 'Tenna (dance 2)');
+										}
+									} catch(_) {
+										playAndShow('tenna','assets/tennadance2.gif','assets/tennadance2.mp3',Math.min(13000,5000), 'Tenna (dance 2)');
+									}
+								}
+							} catch(_) {
+								try {
+									const raw = getCookie('unlockedMoyais') || localStorage.getItem('unlockedMoyais') || '{}';
+									let unlockedObj = {};
+									try { unlockedObj = JSON.parse(raw || '{}'); } catch(_) { unlockedObj = {}; }
+									if (!Object.prototype.hasOwnProperty.call(unlockedObj, 'tenna')) {
+										if (typeof window.unlockMoyai === 'function') window.unlockMoyai('tenna', window.ITEM_DEFS['tenna'].name, CHANCES['tenna']);
+										playAndShow('tenna','assets/tennadance2.gif','assets/tennadance2.mp3',Math.min(13000,5000), 'Tenna (dance 2)', {dev:true});
+									} else {
+										playAndShow('tenna','assets/tennadance2.gif','assets/tennadance2.mp3',Math.min(13000,5000), 'Tenna (dance 2)');
+									}
+								} catch(_) {
+									playAndShow('tenna','assets/tennadance2.gif','assets/tennadance2.mp3',Math.min(13000,5000), 'Tenna (dance 2)');
+								}
+							}
+						} else {
+							playAndShow('tenna','assets/tenna.gif','assets/tenna.mp3',2000);
+						}
+					} break;
+					case 'jewoskar': playAndShow('jewoskar','assets/jewoskar.jpeg','assets/jewoskar.mp3',2000); break;
+					case 'miyabi': {
+						const isVar = (currentClicksForRestrictions > 60) && (Math.random() < 0.30);
+
+						if (isVar) {
+							try {
+								const cur = parseInt(localStorage.getItem('variationCount')||'0',10) || 0;
+								localStorage.setItem('variationCount', String(cur+1));
+								if (typeof window.checkMilestones === 'function') window.checkMilestones();
+							} catch(_) {}
+							try {
+								const firstKey = 'variation_shown_miyabi';
+								const already = localStorage.getItem(firstKey);
+								if (!already) {
+									if (typeof window.unlockMoyai === 'function') window.unlockMoyai('miyabi', window.ITEM_DEFS['miyabi'].name, CHANCES['miyabi']);
+									showFirstTimeVariation({ animationGif: 'assets/animation.gif', variantIntro: 'assets/vergilintro.mp4', variantImg: 'assets/vergil.jpeg', variantSound: 'assets/vergil.mp3', animationDuration: 2000, variantDisplayDuration: 10000, skip: true, variantLarge: true }).then(() => {
+										try { localStorage.setItem(firstKey, '1'); } catch(_) {}
+										try { if (typeof updateCollection === 'function') updateCollection(); } catch(_) {}
+									});
+								} else {
+									try {
+										const raw = getCookie('unlockedMoyais') || localStorage.getItem('unlockedMoyais') || '{}';
+										let unlockedObj = {};
+										try { unlockedObj = JSON.parse(raw || '{}'); } catch(_) { unlockedObj = {}; }
+										if (!Object.prototype.hasOwnProperty.call(unlockedObj, 'miyabi')) {
+											if (typeof window.unlockMoyai === 'function') window.unlockMoyai('miyabi', window.ITEM_DEFS['miyabi'].name, CHANCES['miyabi']);
+											playAndShow('miyabi','assets/vergil.jpeg','assets/vergil2.mp3', Math.min(10000,5000), 'Miyabi (vergil)', {dev:true});
+										} else {
+											playAndShow('miyabi','assets/vergil.jpeg','assets/vergil2.mp3', Math.min(10000,5000), 'Miyabi (vergil)');
+										}
+									} catch(_) {
+										playAndShow('miyabi','assets/vergil.jpeg','assets/vergil2.mp3', Math.min(10000,5000), 'Miyabi (vergil)');
+									}
+								}
+							} catch(_) {
+								try { if (typeof window.unlockMoyai === 'function') window.unlockMoyai('miyabi', window.ITEM_DEFS['miyabi'].name, CHANCES['miyabi']); } catch(_) {}
+								playAndShow('miyabi','assets/vergil.jpeg','assets/vergil.mp3', Math.min(3000,5000), 'Miyabi (vergil)');
+							}
+						} else {
+							playAndShow('miyabi','assets/miyabi.jpeg','assets/miyabi.mp3',2000);
+						}
+					} break;
+					case 'rock': playAndShow('rock','assets/rock.gif','assets/rock.mp3',1500); break;
+					case 'doge': playAndShow('doge','assets/doge.jpeg','assets/doge.mp3',2000); break;
+					case 'nyan': playAndShow('nyan','assets/nyan.gif','assets/nyan.mp3',2200); break;
+	                    case 'debussy': playAndShow('debussy','assets/debussy.gif','assets/debussy.mp3',2200); break;
+					case 'area51': playAndShow('area51','assets/area51.gif','assets/area51.mp3',3000); break;
+					case 'horse': playAndShow('horse','assets/horse.gif','assets/horse.mp3',15000); break;
+					case 'chickenjockey': playAndShow('chickenjockey','assets/chickenjockey.gif','assets/chickenjockey.mp3',1300); break;
+					case 'grow': playAndShow('grow','assets/grow.gif','assets/grow.mp3',15000); break;
+					case 'sojyak': playAndShow('sojyak','assets/sojyak.gif','assets/sojyak.mp3',15000); break;
+					case 'sensei': playAndShow('sensei','assets/sensei.gif','assets/sensei.mp3',2000); break;
+						case '911': playAndShow('911','assets/911.jpeg','assets/911.mp3',1000); break;
+						case 'slander': playAndShow('slander','assets/slander.gif','assets/slander.mp3',2000); break;
+						case 'shaw': playAndShow('shaw','assets/shaw.jpeg','assets/shaw.mp3',2000); break;
+					case 'moyai1': playAndShow('moyai1','assets/moyai.jpeg','assets/moyai.mp3',1500); break;
+					default: break;
+				}
+			});
+		})();
+		(function(){
+			try {
+				const map = {
+					upgradesButton: 'upgradesPanel',
+					shopButton: 'shopPanel',
+					moyaiCollectionButton: 'collectionMenu',
+					popupSettingsButton: 'popupSettingsPanel',
+					milestonesButton: 'milestonePanel',
+					devTestButton: 'devTestPanel'
+				};
+				Object.keys(map).forEach(btnId => {
+					try {
+						const btn = document.getElementById(btnId);
+						if (!btn) return;
+						btn.addEventListener('click', function(ev){
+							ev && ev.stopPropagation && ev.stopPropagation();
+							try { if (window.closeAllMenus) window.closeAllMenus(); } catch(_) {}
+							const panelId = map[btnId];
+							const panel = document.getElementById(panelId);
+							if (!panel) return;
+							try { panel.style.pointerEvents = 'auto'; } catch(_) {}
+							panel.style.display = (panelId === 'collectionMenu') ? 'grid' : 'block';
+							if (panelId === 'collectionMenu') {
+								try { if (typeof renderGrouping === 'function') renderGrouping(); } catch(_) {}
+								try { if (typeof updateCollection === 'function') updateCollection(); } catch(_) {}
+							}
+							if (panelId === 'popupSettingsPanel') { try { if (typeof renderPopupSettingsPanel === 'function') renderPopupSettingsPanel(); } catch(_) {} }
+							if (panelId === 'milestonePanel') { try { if (typeof checkMilestones === 'function') checkMilestones(); } catch(_) {} try { if (typeof renderMilestonesPanel === 'function') renderMilestonesPanel(); } catch(_) {} }
+						});
+					} catch(_) {}
+				});
+			} catch(_) {}
+		})();
+		(function(){
+			try {
+				const uiIds = ['slidingMenu','devTestPanel','shopPanel','upgradesPanel','popupSettingsPanel','milestonePanel','collectionMenu','guiToastContainer','proTip'];
+				const existing = document.getElementById('uiLayer');
+				if (existing) return;
+				const uiLayer = document.createElement('div');
+				uiLayer.id = 'uiLayer';
+				uiLayer.style.position = 'fixed';
+				uiLayer.style.left = '0';
+				uiLayer.style.top = '0';
+				uiLayer.style.right = '0';
+				uiLayer.style.bottom = '0';
+				uiLayer.style.zIndex = '1000000';
+				uiLayer.style.pointerEvents = 'none';
+				document.body.appendChild(uiLayer);
+				uiIds.forEach(id => {
+					try {
+						const el = document.getElementById(id);
+						if (!el) return;
+						el.style.pointerEvents = 'auto';
+						uiLayer.appendChild(el);
+					} catch(_) {}
+				});
+			} catch (_) {}
+		})();
+
+		(function(){
+			try {
+				const slidingMenu = document.getElementById('slidingMenu');
+				if (!slidingMenu) return;
+				slidingMenu.addEventListener('click', function(e){
+					try {
+						const btn = e.target && e.target.closest ? e.target.closest('.grid-button') : null;
+						if (!btn) return;
+						e && e.stopPropagation && e.stopPropagation();
+						console.debug && console.debug('slidingMenu delegated click on', btn.id || btn.textContent);
+						const map = {
+							upgradesButton: 'upgradesPanel',
+							shopButton: 'shopPanel',
+							moyaiCollectionButton: 'collectionMenu',
+							popupSettingsButton: 'popupSettingsPanel',
+							milestonesButton: 'milestonePanel',
+							devTestButton: 'devTestPanel'
+						};
+						const bid = btn.id;
+						if (bid && map[bid]) {
+							try { if (window.showPanel) window.showPanel(map[bid], bid === 'moyaiCollectionButton' ? 'grid' : 'block'); } catch(_) {}
+							if (bid === 'moyaiCollectionButton') {
+								try { if (typeof renderGrouping === 'function') renderGrouping(); } catch(_) {}
+								try { if (typeof updateCollection === 'function') updateCollection(); } catch(_) {}
+							}
+							if (bid === 'popupSettingsButton') {
+								try { if (typeof renderPopupSettingsPanel === 'function') renderPopupSettingsPanel(); } catch(_) {}
+							}
+							if (bid === 'milestonesButton') {
+								try { if (typeof checkMilestones === 'function') checkMilestones(); } catch(_) {}
+								try { if (typeof renderMilestonesPanel === 'function') renderMilestonesPanel(); } catch(_) {}
+							}
+						} else {
+							const inner = btn.querySelector && btn.querySelector('[id]');
+							if (inner && inner.id && map[inner.id]) {
+								try { if (window.showPanel) window.showPanel(map[inner.id], inner.id === 'moyaiCollectionButton' ? 'grid' : 'block'); } catch(_) {}
+							}
+						}
+					} catch(_) {}
+				});
+			} catch(_) {}
+		})();
+
+		(function(){
+			const moyaiCollectionButton = document.getElementById('moyaiCollectionButton');
+			const collectionMenu = document.getElementById('collectionMenu');
+			const groupToggle = document.getElementById('groupToggle');
+			const allItemsContainerId = 'all-items-flat';
+			let unlockedMoyais = {};
+			try {
+				const raw = getCookie('unlockedMoyais') || localStorage.getItem('unlockedMoyais');
+				if (raw) {
+					const parsed = JSON.parse(raw);
+					if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) unlockedMoyais = parsed;
+				}
+			} catch (_) { unlockedMoyais = {}; }
+			try {
+				let migrated = false;
+				Object.keys(unlockedMoyais).forEach(k => {
+					try {
+						const e = unlockedMoyais[k];
+						if (e && typeof e === 'object') {
+							if (typeof e.everOwned === 'undefined') { e.everOwned = Number(e.count) || 0; migrated = true; }
+						}
+					} catch(_) {}
+				});
+				if (migrated) {
+					try { setCookie('unlockedMoyais', JSON.stringify(unlockedMoyais), 365); } catch(_) {}
+					try { localStorage.setItem('unlockedMoyais', JSON.stringify(unlockedMoyais)); } catch(_) {}
+				}
+			} catch(_) {}
+			try {
+				if (unlockedMoyais && window.ITEM_DEFS) {
+					let changed = false;
+					Object.keys(unlockedMoyais).forEach(k => {
+						try {
+							if (window.ITEM_DEFS[k] && unlockedMoyais[k] && unlockedMoyais[k].name && unlockedMoyais[k].name !== window.ITEM_DEFS[k].name) {
+								unlockedMoyais[k].name = window.ITEM_DEFS[k].name;
+								changed = true;
+							}
+						} catch(_) {}
+					});
+					if (changed) {
+						try { setCookie('unlockedMoyais', JSON.stringify(unlockedMoyais), 365); } catch(_) {}
+						try { localStorage.setItem('unlockedMoyais', JSON.stringify(unlockedMoyais)); } catch(_) {}
+					}
+				}
+			} catch(_) {}
+			let groupByRarity = true;
+			try { groupByRarity = JSON.parse(localStorage.getItem('groupByRarity') || 'true'); } catch(_) { groupByRarity = true; }
+
+			function formatChance(c) {
+				if (c == null) return '0%';
+				if (typeof c === 'string') return c;
+				if (typeof c === 'number') {
+					const pct = c * 100;
+					if (pct < 0.01) return '<0.01%';
+					if (pct < 1) {
+						let s = pct.toFixed(3).replace(/\.?0+$/, '');
+						return s + '%';
+					}
+					if (Math.abs(pct - Math.round(pct)) < 1e-9) return Math.round(pct) + '%';
+					return pct.toFixed(1).replace(/\.0$/, '') + '%';
+				}
+				return '0%';
+			}
+			let allItems = document.getElementById(allItemsContainerId);
+			if (!allItems) {
+				allItems = document.createElement('div');
+				allItems.id = allItemsContainerId;
+				allItems.style.display = 'none';
+				allItems.style.width = '100%';
+				allItems.style.display = 'grid';
+				allItems.style.gridTemplateColumns = 'repeat(5, 1fr)';
+				allItems.style.gap = '12px';
+				collectionMenu.insertBefore(allItems, collectionMenu.firstChild.nextSibling);
+			}
+
+			function renderGrouping() {
+				localStorage.setItem('groupByRarity', JSON.stringify(groupByRarity));
+				const headers = collectionMenu.querySelectorAll('.rarity-header');
+				const rarityItems = collectionMenu.querySelectorAll('.rarity-items');
+				if (!groupByRarity) {
+					headers.forEach(h=>h.style.display='none');
+					rarityItems.forEach(r=>r.style.display='none');
+					allItems.style.display='grid';
+					window.ITEM_ORDER.forEach(id => {
+						const el = document.getElementById(id);
+						if (el) allItems.appendChild(el);
+					});
+				} else {
+					headers.forEach(h=>h.style.display='flex');
+					rarityItems.forEach(r=>r.style.display='grid');
+					allItems.style.display='none';
+					window.ITEM_ORDER.forEach(id => {
+						const el = document.getElementById(id);
+						if (!el) return;
+						const rarity = el.dataset.rarity || (window.ITEM_DEFS[id] && window.ITEM_DEFS[id].rarity) || 'common';
+						const target = document.getElementById('items-' + rarity);
+						if (target) target.appendChild(el);
+					});
+				}
+			}
+			['common','uncommon','rare','epic','mythic','legendary','variants'].forEach(r => {
+				const header = document.getElementById('header-' + r);
+				const items = document.getElementById('items-' + r);
+				if (!header || !items) return;
+				header.addEventListener('click', (ev) => {
+					ev.stopPropagation();
+					items.classList.toggle('collapsed');
+					const arrow = header.querySelector('.arrow');
+					if (items.classList.contains('collapsed')) arrow.style.transform = 'rotate(0deg)'; else arrow.style.transform = 'rotate(90deg)';
+				});
+			});
+			groupToggle.addEventListener('click', (e) => {
+				e.stopPropagation();
+				groupByRarity = !groupByRarity;
+				groupToggle.textContent = groupByRarity ? '▢' : '☑';
+				renderGrouping();
+			});
+			groupToggle.textContent = groupByRarity ? '▢' : '☑';
+
+			function updateCollection() {
+				const milestoneBoost = window.getRarityBoost();
+				const shopBoost = (window.getShopBoost ? window.getShopBoost() : 0);
+				const rarityBoostScaleLocal = { common: 1.0, uncommon: 0.8, rare: 0.6, epic: 0.4, legendary: 0.2, mythic: 0.15 };
+				const rarityMultiplier = { common: 1.0, uncommon: 1.0, rare: 1.0, epic: 1.0, legendary: 1.0, mythic: 1.0/3.0 };
+				window.ITEM_ORDER.forEach(id => {
+					const def = window.ITEM_DEFS[id] || {};
+					const item = document.getElementById(id);
+					if (!item) return;
+					if (item.dataset && item.dataset.nocollection) {
+						let showVariant = false;
+						try {
+					    if (unlockedMoyais && Object.prototype.hasOwnProperty.call(unlockedMoyais, id)) showVariant = true;
+							if (!showVariant) {
+								if (id === 'amogus2') showVariant = !!localStorage.getItem('variation_shown_amogus');
+								if (id === 'itspptime') showVariant = !!localStorage.getItem('variation_shown_itstvtime');
+								if (id === 'tenna2') showVariant = !!localStorage.getItem('variation_shown_tenna2');
+								if (id === 'tennadance') showVariant = !!localStorage.getItem('variation_shown_tennadance');
+								if (id === 'tennadance2') showVariant = !!localStorage.getItem('variation_shown_tennadance2');
+								if (id === 'analog67') showVariant = !!localStorage.getItem('variation_shown_67');
+								if (id === 'gotosleep') showVariant = !!localStorage.getItem('variation_shown_ladododo');
+								if (id === 'vergil') showVariant = !!localStorage.getItem('variation_shown_miyabi');
+							}
+						} catch(_) { showVariant = false; }
+						item.style.display = showVariant ? '' : 'none';
+						return;
+					}
+					const img = item.querySelector('img');
+					const nameEl = item.querySelector('.name');
+					const countEl = item.querySelector('.count');
+					const entry = unlockedMoyais[id];
+					const base = def.baseChance || 0;
+					const scale = rarityBoostScaleLocal[def.rarity] || 0;
+					let chanceVal = base;
+					if (scale > 0 && milestoneBoost) chanceVal += (milestoneBoost * scale);
+					if (scale > 0 && shopBoost && ['epic','legendary','mythic'].indexOf(def.rarity) >= 0) chanceVal += (shopBoost * scale);
+					chanceVal = chanceVal * (rarityMultiplier[def.rarity] || 1);
+
+					const displayName = (def && def.name) ? def.name : (entry && entry.name) ? entry.name : id;
+					const rarityLabel = def.rarity ? ` (${def.rarity})` : '';
+
+					if (entry) {
+						img.style.filter = 'none';
+						nameEl.innerHTML = `${displayName} <span class="rarity-inline rarity-${def.rarity}" style="margin-left:6px;font-size:11px;">${def.rarity}</span> ${chanceVal ? `<span style=\"margin-left:6px;color:#666;font-size:11px;\">(${formatChance(chanceVal)})</span>` : ''}`;
+						const ct = Number(entry.count) || 0;
+						const ever = Number(entry.everOwned) || ct;
+						countEl.textContent = ct > 0 ? `${ct} owned • ever owned: ${ever}` : 'not yet obtained';
+					} else {
+						img.style.filter = 'brightness(0)';
+						nameEl.innerHTML = `??? ${chanceVal ? `<span style=\"margin-left:6px;color:#666;font-size:11px;\">(${formatChance(chanceVal)})</span>` : ''}`;
+						countEl.textContent = 'not yet obtained';
+					}
+				});
+			}
+
+			if (moyaiCollectionButton) moyaiCollectionButton.addEventListener('click', (e) => {
+				console.debug && console.debug('click: moyaiCollectionButton', e && (e.target && (e.target.id || e.target.className || e.target.nodeName)));
+				try { e && e.stopPropagation(); } catch(_) {}
+				try {
+					const slidingMenu = document.getElementById('slidingMenu');
+					if (slidingMenu && e && slidingMenu.contains(e.target) && !e.target.closest('.grid-button')) {
+						console.debug && console.debug('moyaiCollectionButton click ignored because origin inside slidingMenu but not on grid-button');
+						return;
+					}
+				} catch(_) {}
+				try { if (window.showPanel) window.showPanel('collectionMenu','grid'); } catch(_) {}
+				try { if (typeof renderGrouping === 'function') renderGrouping(); } catch(_) {}
+				try { if (typeof updateCollection === 'function') updateCollection(); } catch(_) {}
+			});
+			try {
+				const amogEl = document.getElementById('amogus');
+				if (amogEl && !amogEl.dataset.variationListener) {
+					amogEl.dataset.variationListener = '1';
+				}
+			} catch(_) {}
+			try {
+				window.ITEM_ORDER.forEach(id => {
+					const el = document.getElementById(id);
+					if (!el) return;
+					const img = el.querySelector('img');
+					if (!img) return;
+					if (img.dataset.soundListener) return;
+
+					function soundForId(currentId) {
+						switch (currentId) {
+							case 'moiay': return 'assets/moiay.mp3';
+							case 'moyai2': return 'assets/moyai2.mp3';
+							case 'moyai1': return 'assets/moyai.mp3';
+							case 'itstvtime': return 'assets/itstvtime.mp3';
+							case 'amogus2': return 'assets/amogus2.mp3';
+							case 'itspptime': return 'assets/itspptime.mp3';
+							case '67': return 'assets/67.mp3';
+							case 'analog67': return 'assets/analog67.mp3';
+							case 'hihihiha': return 'assets/hihihiha.mp3';
+								case 'ladododo': return 'assets/ladododo.mp3';
+							case 'gotosleep': return (localStorage.getItem('variation_shown_ladododo') ? 'assets/gotosleep2.mp3' : 'assets/gotosleep.mp3');
+							case 'wokendeep': return 'assets/wokendeep.mp3';
+							case '2bell': return 'assets/2bell.mp3';
+							case 'tenna': return 'assets/tenna.mp3';
+							case 'shaw': return 'assets/shaw.mp3';
+							case 'slander': return 'assets/slander.mp3';
+							case 'area51': return 'assets/area51.mp3';
+							case 'nyan': return 'assets/nyan.mp3';
+			                            case 'debussy': return 'assets/debussy.mp3';
+							case 'doge': return 'assets/doge.mp3';
+							case 'rock': return 'assets/rock.mp3';
+							case 'horse': return 'assets/horse.mp3';
+							case 'tennadance': return 'assets/tennadance.mp3';
+							case 'tennadance2': return 'assets/tennadance2.mp3';
+							case 'biteof87': return 'assets/biteof87.mp3';
+							case 'tenna2': return 'assets/tenna2.mp3';
+							case 'jewoskar': return 'assets/jewoskar.mp3';
+							case 'miyabi': return 'assets/miyabi.mp3';
+							case 'vergil': return 'assets/vergil.mp3';
+							case 'amogus': return 'assets/amogus.mp3';
+								case 'sensei': return 'assets/sensei.mp3';
+								case '911': return 'assets/911.mp3';
+							case 'grow': return 'assets/grow.mp3';
+							case 'sojyak': return 'assets/sojyak.mp3';
+							case 'chickenjockey': return 'assets/chickenjockey.mp3';
+							default: return null;
+						}
+					}
+
+					img.addEventListener('mouseenter', () => {
+						try {
+							let isUnlockedForHover = false;
+							if (unlockedMoyais && Object.prototype.hasOwnProperty.call(unlockedMoyais, id)) isUnlockedForHover = true;
+							try {
+								if (!isUnlockedForHover) {
+									if (id === 'amogus2' && localStorage.getItem('variation_shown_amogus')) isUnlockedForHover = true;
+									if (id === 'itspptime' && localStorage.getItem('variation_shown_itstvtime')) isUnlockedForHover = true;
+									if (id === 'tenna2' && localStorage.getItem('variation_shown_tenna2')) isUnlockedForHover = true;
+									if (id === 'tennadance' && localStorage.getItem('variation_shown_tennadance')) isUnlockedForHover = true;
+									if (id === 'tennadance2' && localStorage.getItem('variation_shown_tennadance2')) isUnlockedForHover = true;
+									if (id === 'analog67' && localStorage.getItem('variation_shown_67')) isUnlockedForHover = true;
+									if (id === 'gotosleep' && localStorage.getItem('variation_shown_ladododo')) isUnlockedForHover = true;
+								}
+							} catch(_) {}
+							if (!isUnlockedForHover) return;
+							if (img.style && img.style.display === 'none') return;
+							let soundSrc = null;
+							if (id === 'amogus') {
+								soundSrc = 'assets/amogus.mp3';
+							} else {
+								soundSrc = soundForId(id);
+							}
+							if (!soundSrc) return;
+							img._hoverAudio = new Audio(soundSrc);
+							img._hoverAudio.loop = true;
+							img._hoverAudio.play().catch(()=>{});
+						} catch(_) {}
+					});
+
+					img.addEventListener('mouseleave', () => {
+						try { if (img._hoverAudio) { img._hoverAudio.pause(); img._hoverAudio.currentTime = 0; delete img._hoverAudio; } } catch(_) {}
+					});
+
+					img.dataset.soundListener = '1';
+				});
+			} catch(_) {}
+
+			collectionMenu.addEventListener('click', (e) => {
+				if (e.target === collectionMenu) collectionMenu.style.display = 'none';
+			});
+			try {
+				const collectionCloseBtn = document.getElementById('collectionCloseBtn');
+				if (collectionCloseBtn) {
+					collectionCloseBtn.addEventListener('click', (ev) => {
+						ev.stopPropagation();
+						try { if (window.closeAllMenus) window.closeAllMenus(); } catch(_) {}
+						collectionMenu.style.display = 'none';
+					});
+				}
+			} catch(_) {}
+			function readPopupCount() {
+				try { return parseInt(localStorage.getItem('popupCount') || '0',10); } catch(_) { return 0; }
+			}
+			function persistPopupCount(n) { try { localStorage.setItem('popupCount', String(n)); } catch(_) {} }
+			function readVariationCount() { try { return parseInt(localStorage.getItem('variationCount') || '0',10); } catch(_) { return 0; } }
+			function persistVariationCount(n) { try { localStorage.setItem('variationCount', String(n)); } catch(_) {} }
+			function readUnlockedMilestones() { try { return JSON.parse(localStorage.getItem('unlockedMilestones')||'{}'); } catch(_) { return {}; } }
+			function persistUnlockedMilestones(m) { try { localStorage.setItem('unlockedMilestones', JSON.stringify(m)); } catch(_) {} }
+
+			function checkMilestones() {
+				const unlocked = readUnlockedMilestones();
+				const clicks = parseInt(getCookie('oskar_clicker_count') || localStorage.getItem('oskar_clicker_count') || '0',10) || 0;
+				const popups = readPopupCount();
+				const variations = readVariationCount();
+				let changed = false;
+				window.MILESTONE_DEFS.forEach(ms => {
+					if (unlocked[ms.id]) return;
+					if (ms.type === 'clicks' && clicks >= ms.threshold) { unlocked[ms.id] = Date.now(); changed = true; }
+					if (ms.type === 'popups' && popups >= ms.threshold) { unlocked[ms.id] = Date.now(); changed = true; }
+					if (ms.type === 'variations' && variations >= ms.threshold) { unlocked[ms.id] = Date.now(); changed = true; }
+					if (ms.type === 'obtains') {
+						try {
+							const entry = unlockedMoyais && unlockedMoyais[ms.targetId];
+							const ever = Number(entry && entry.everOwned) || Number(entry && entry.count) || 0;
+							if (ever >= ms.threshold) { unlocked[ms.id] = Date.now(); changed = true; }
+						} catch(_) {}
+					}
+				});
+				if (changed) persistUnlockedMilestones(unlocked);
+			}
+			const milestonesButton = document.getElementById('milestonesButton');
+			const milestonePanel = document.getElementById('milestonePanel');
+			const milestonesList = document.getElementById('milestonesList');
+			const closeMilestones = document.getElementById('closeMilestones');
+
+			function renderMilestonesPanel() {
+				const unlocked = readUnlockedMilestones();
+				milestonesList.innerHTML = '';
+				window.MILESTONE_DEFS.forEach(ms => {
+					if (ms.hidden && !unlocked[ms.id]) return;
+					const div = document.createElement('div');
+					const clicks = parseInt(getCookie('oskar_clicker_count') || localStorage.getItem('oskar_clicker_count') || '0',10) || 0;
+					const popups = readPopupCount();
+					const variations = readVariationCount();
+					let progress = 0;
+					if (ms.type === 'clicks') progress = Math.min(1, clicks / ms.threshold);
+					if (ms.type === 'popups') progress = Math.min(1, popups / ms.threshold);
+					if (ms.type === 'variations') progress = Math.min(1, variations / ms.threshold);
+					if (ms.type === 'obtains') {
+						try {
+							const entry = unlockedMoyais && unlockedMoyais[ms.targetId];
+							const ever = Number(entry && entry.everOwned) || Number(entry && entry.count) || 0;
+							progress = Math.min(1, ever / ms.threshold);
+						} catch(_) { progress = 0; }
+					}
+					div.innerHTML = `<div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;'><strong>${ms.title}</strong><span>${unlocked[ms.id] ? 'Unlocked' : Math.round(progress*100)+'%'}</span></div>`;
+					milestonesList.appendChild(div);
+				});
+			}
+
+			milestonesButton.addEventListener('click', (e) => {
+				console.debug && console.debug('click: milestonesButton', e && (e.target && (e.target.id || e.target.className || e.target.nodeName)));
+				try { e && e.stopPropagation(); } catch(_) {}
+				try { const slidingMenu = document.getElementById('slidingMenu'); if (slidingMenu && e && slidingMenu.contains(e.target) && !e.target.closest('.grid-button')) { console.debug && console.debug('milestonesButton click ignored (inside slidingMenu non-grid)'); return; } } catch(_) {}
+				try { if (window.showPanel) window.showPanel('milestonePanel','block'); } catch(_) {} try { if (typeof checkMilestones === 'function') checkMilestones(); } catch(_) {} try { if (typeof renderMilestonesPanel === 'function') renderMilestonesPanel(); } catch(_) {}
+			});
+			const popupSettingsButton = document.getElementById('popupSettingsButton');
+			const popupSettingsPanel = document.getElementById('popupSettingsPanel');
+			const popupSettingsList = document.getElementById('popupSettingsList');
+			const closePopupSettings = document.getElementById('closePopupSettings');
+
+			function readPopupSettings() { try { return JSON.parse(localStorage.getItem('popupSettings')||'{}'); } catch(_) { return {}; } }
+			function persistPopupSettings(v) { try { localStorage.setItem('popupSettings', JSON.stringify(v)); } catch(_) {} }
+			function obtainedByRarity() {
+				const map = { common:0, uncommon:0, rare:0, epic:0, legendary:0, mythic:0 };
+				Object.keys(unlockedMoyais).forEach(id => {
+					if (!Object.prototype.hasOwnProperty.call(unlockedMoyais, id)) return;
+					const def = window.ITEM_DEFS[id];
+					const ct = Number(unlockedMoyais[id] && unlockedMoyais[id].count) || 0;
+					if (def && def.rarity) map[def.rarity] = (map[def.rarity]||0) + ct;
+				});
+				return map;
+			}
+			const rarityThreshold = { common:100, uncommon:75, rare:50, epic:25, legendary:12, mythic:6 };
+
+			function renderPopupSettingsPanel() {
+				popupSettingsList.innerHTML = '';
+				const settings = readPopupSettings();
+				try {
+					window.ITEM_ORDER.forEach(id => {
+						const elCheck = document.getElementById(id);
+						if (elCheck && elCheck.dataset && elCheck.dataset.nocollection) {
+							if (settings && settings[id]) { delete settings[id]; }
+						}
+					});
+					try { persistPopupSettings(settings); } catch(_) {}
+				} catch(_) {}
+				const byR = obtainedByRarity();
+				window.ITEM_ORDER.forEach(id => {
+					try {
+						const elCheck = document.getElementById(id);
+						if (elCheck && elCheck.dataset && elCheck.dataset.nocollection) return;
+					} catch(_) {}
+					const def = window.ITEM_DEFS[id] || {};
+					const row = document.createElement('div');
+					row.style.display = 'flex';
+					row.style.alignItems = 'center';
+					row.style.justifyContent = 'space-between';
+					row.style.padding = '6px 4px';
+					row.style.borderBottom = '1px solid #eee';
+					const left = document.createElement('div');
+					const discovered = !!(unlockedMoyais && Object.prototype.hasOwnProperty.call(unlockedMoyais, id));
+					const displayName = discovered ? (unlockedMoyais[id].name || def.name || id) : '???';
+					left.innerHTML = `<strong style="font-size:13px">${displayName}</strong><div style="font-size:11px;color:#666">${def.rarity || ''} • required: ${rarityThreshold[def.rarity] || 0}</div>`;
+					const right = document.createElement('div');
+					const chk = document.createElement('input');
+					chk.type = 'checkbox';
+					const allowed = (byR[def.rarity] || 0) >= (rarityThreshold[def.rarity] || 0);
+					if (settings && settings[id] && !allowed) { delete settings[id]; }
+					chk.checked = !!settings[id];
+					chk.disabled = !allowed;
+					if (!allowed) chk.title = `Need ${(rarityThreshold[def.rarity]||0)} ${def.rarity} popups to enable`;
+					chk.addEventListener('change', () => {
+						const byRNow = obtainedByRarity();
+						const allowedNow = (byRNow[def.rarity] || 0) >= (rarityThreshold[def.rarity] || 0);
+						if (!allowedNow) {
+							chk.checked = false;
+							const s2f = readPopupSettings();
+							if (s2f && s2f[id]) { delete s2f[id]; persistPopupSettings(s2f); }
+							return;
+						}
+						const s2 = readPopupSettings();
+						if (chk.checked) s2[id] = true; else delete s2[id];
+						persistPopupSettings(s2);
+					});
+					right.appendChild(chk);
+					row.appendChild(left);
+					row.appendChild(right);
+					popupSettingsList.appendChild(row);
+				});
+			}
+
+			if (popupSettingsButton) popupSettingsButton.addEventListener('click', (e) => {
+				console.debug && console.debug('click: popupSettingsButton', e && (e.target && (e.target.id || e.target.className || e.target.nodeName)));
+				try { e && e.stopPropagation(); } catch(_) {}
+				try { const slidingMenu = document.getElementById('slidingMenu'); if (slidingMenu && e && slidingMenu.contains(e.target) && !e.target.closest('.grid-button')) { console.debug && console.debug('popupSettingsButton click ignored (inside slidingMenu non-grid)'); return; } } catch(_) {}
+				try { if (window.showPanel) window.showPanel('popupSettingsPanel','block'); } catch(_) {} try { if (typeof renderPopupSettingsPanel === 'function') renderPopupSettingsPanel(); } catch(_) {}
+			});
+			if (closePopupSettings) closePopupSettings.addEventListener('click', () => { popupSettingsPanel.style.display='none'; });
+			const devTestButton = document.getElementById('devTestButton');
+			const devTestPanel = document.getElementById('devTestPanel');
+			const closeDevTest = document.getElementById('closeDevTest');
+			const devForceTenna = document.getElementById('devForceTenna');
+			const devForceJewoskar = document.getElementById('devForceJewoskar');
+			const devForceMoiay = document.getElementById('devForceMoiay');
+			const devForceVergil = document.getElementById('devForceVergil');
+
+			if (devTestButton) devTestButton.addEventListener('click', (e) => {
+				console.debug && console.debug('click: devTestButton', e && (e.target && (e.target.id || e.target.className || e.target.nodeName)));
+				try { e && e.stopPropagation(); } catch(_) {}
+				try { const slidingMenu = document.getElementById('slidingMenu'); if (slidingMenu && e && slidingMenu.contains(e.target) && !e.target.closest('.grid-button')) { console.debug && console.debug('devTestButton click ignored (inside slidingMenu non-grid)'); return; } } catch(_) {}
+				try { if (window.showPanel) window.showPanel('devTestPanel','block'); } catch(_) {}
+			});
+			if (closeDevTest) closeDevTest.addEventListener('click', () => { if (devTestPanel) devTestPanel.style.display = 'none'; });
+
+			if (devForceTenna) devForceTenna.addEventListener('click', () => {
+				if (window.playAndShow) window.playAndShow('tenna','assets/tenna.gif','assets/tenna.mp3',2000, undefined, {dev:true});
+			});
+			const devForceLadododo = document.getElementById('devForceLadododo');
+				const devForce67 = document.getElementById('devForce67');
+				const devForceAnalog67 = document.getElementById('devForceAnalog67');
+				const devForceHihihiha = document.getElementById('devForceHihihiha');
+			const devForceSensei = document.getElementById('devForceSensei');
+			const devForce911 = document.getElementById('devForce911');
+			if (devForceLadododo) devForceLadododo.addEventListener('click', () => {
+				if (window.playAndShow) window.playAndShow('ladododo','assets/ladododo.gif','assets/ladododo.mp3',1600, undefined, {dev:true});
+			});
+			if (devForceHihihiha) devForceHihihiha.addEventListener('click', () => {
+				if (window.playAndShow) window.playAndShow('hihihiha','assets/hihihiha.gif','assets/hihihiha.mp3',1800, undefined, {dev:true});
+			});
+			if (devForceVergil) devForceVergil.addEventListener('click', () => {
+				if (window.showFirstTimeVariation) {
+					window.showFirstTimeVariation({ animationGif: 'assets/animation.gif', variantIntro: 'assets/vergilintro.mp4', variantImg: 'assets/vergil.gif', variantSound: 'assets/vergil.mp3', animationDuration: 2000, variantDisplayDuration: 10000, skip: true, variantLarge: true });
+				}
+			});
+			if (devForce67) devForce67.addEventListener('click', () => {
+				if (window.playAndShow) window.playAndShow('67','assets/67.jpeg','assets/67.mp3',1500, undefined, {dev:true});
+			});
+			if (devForceAnalog67) devForceAnalog67.addEventListener('click', () => {
+				if (window.showFirstTimeVariation) {
+					window.showFirstTimeVariation({ animationGif: 'assets/animation.gif', variantImg: 'assets/analog67.gif', variantSound: 'assets/analog67.mp3', animationDuration: 2000, variantDisplayDuration: 5000 });
+				}
+			});
+			const devForceGotosleep = document.getElementById('devForceGotosleep');
+			if (devForceGotosleep) devForceGotosleep.addEventListener('click', () => {
+				if (window.showFirstTimeVariation) {
+					window.showFirstTimeVariation({ animationGif: 'assets/animation.gif', variantImg: 'assets/gotosleep.gif', variantSound: 'assets/gotosleep.mp3', animationDuration: 2000, variantDisplayDuration: 6000 });
+				}
+			});
+			if (devForceSensei) devForceSensei.addEventListener('click', () => {
+				if (window.playAndShow) window.playAndShow('sensei','assets/sensei.gif','assets/sensei.mp3',2000, undefined, {dev:true});
+			});
+			if (devForce911) devForce911.addEventListener('click', () => {
+				if (window.playAndShow) window.playAndShow('911','assets/911.jpeg','assets/911.mp3',1000, undefined, {dev:true});
+			});
+			const devForceTenna2 = document.getElementById('devForceTenna2');
+			if (devForceTenna2) {
+				devForceTenna2.addEventListener('click', () => {
+					if (window.showFirstTimeVariation) {
+						window.showFirstTimeVariation({ animationGif: 'assets/animation.gif', variantImg: 'assets/tenna2.gif', variantSound: 'assets/tenna2.mp3', animationDuration: 2000, variantDisplayDuration: 40000, skip: true, skipDelayMs: 3000 });
+					}
+				});
+			}
+			const devForceTennadance = document.getElementById('devForceTennadance');
+			if (devForceTennadance) {
+				devForceTennadance.addEventListener('click', () => {
+					if (window.showFirstTimeVariation) {
+						window.showFirstTimeVariation({ animationGif: 'assets/animation.gif', variantImg: 'assets/tennadance.gif', variantSound: 'assets/tennadance.mp3', animationDuration: 2000, variantDisplayDuration: 14000, skip: true, skipDelayMs: 3000 });
+					}
+				});
+			}
+				const devForceGrow = document.getElementById('devForceGrow');
+				if (devForceGrow) {
+					devForceGrow.addEventListener('click', () => {
+						if (window.playAndShow) window.playAndShow('grow','assets/grow.gif','assets/grow.mp3',15000, undefined, {dev:true});
+					});
+				}
+				const devForceSojyak = document.getElementById('devForceSojyak');
+				if (devForceSojyak) {
+					devForceSojyak.addEventListener('click', () => {
+						if (window.playAndShow) window.playAndShow('sojyak','assets/sojyak.gif','assets/sojyak.mp3',15000, undefined, {dev:true});
+					});
+				}
+				const devForceChickenjockey = document.getElementById('devForceChickenjockey');
+				if (devForceChickenjockey) {
+					devForceChickenjockey.addEventListener('click', () => {
+						if (window.playAndShow) window.playAndShow('chickenjockey','assets/chickenjockey.gif','assets/chickenjockey.mp3',1300, undefined, {dev:true});
+					});
+				}
+					const devForceDebussy = document.getElementById('devForceDebussy');
+					if (devForceDebussy) {
+						devForceDebussy.addEventListener('click', () => {
+							if (window.playAndShow) window.playAndShow('debussy','assets/debussy.gif','assets/debussy.mp3',2200, undefined, {dev:true});
+						});
+					}
+			const devForceTennadance2 = document.getElementById('devForceTennadance2');
+			if (devForceTennadance2) {
+				devForceTennadance2.addEventListener('click', () => {
+					if (window.showFirstTimeVariation) {
+						window.showFirstTimeVariation({ animationGif: 'assets/animation.gif', variantImg: 'assets/tennadance2.gif', variantSound: 'assets/tennadance2.mp3', animationDuration: 2000, variantDisplayDuration: 13000, skip: true, skipDelayMs: 3000 });
+					}
+				});
+			}
+			if (devForceJewoskar) devForceJewoskar.addEventListener('click', () => {
+				if (window.playAndShow) window.playAndShow('jewoskar','assets/jewoskar.jpeg','assets/jewoskar.mp3',2000, undefined, {dev:true});
+			});
+			if (devForceMoiay) devForceMoiay.addEventListener('click', () => {
+				if (window.playAndShow) window.playAndShow('moiay','assets/moiay.jpeg','assets/moiay.mp3',2000, undefined, {dev:true});
+			});
+			const devForceItstvtimeAnim = document.getElementById('devForceItstvtimeAnim');
+			if (devForceItstvtimeAnim) {
+				devForceItstvtimeAnim.addEventListener('click', () => {
+						if (window.showFirstTimeVariation) {
+							window.showFirstTimeVariation({ animationGif: 'assets/animation.gif', variantImg: 'assets/itspptime.gif', variantSound: 'assets/itspptime.mp3', animationDuration: 2300, variantDisplayDuration: 5200 });
+						}
+				});
+			}
+			const shopButton = document.getElementById('shopButton');
+			const shopPanel = document.getElementById('shopPanel');
+			const closeShop = document.getElementById('closeShop');
+			if (shopButton) shopButton.addEventListener('click', (e) => {
+				console.debug && console.debug('click: shopButton', e && (e.target && (e.target.id || e.target.className || e.target.nodeName)));
+				try { e && e.stopPropagation(); } catch(_) {}
+				try { const slidingMenu = document.getElementById('slidingMenu'); if (slidingMenu && e && slidingMenu.contains(e.target) && !e.target.closest('.grid-button')) { console.debug && console.debug('shopButton click ignored (inside slidingMenu non-grid)'); return; } } catch(_) {}
+				try { if (window.showPanel) window.showPanel('shopPanel','block'); } catch(_) {}
+			});
+			if (closeShop) closeShop.addEventListener('click', () => { if (shopPanel) shopPanel.style.display = 'none'; });
+			const buyLuckBoost = document.getElementById('buyLuckBoost');
+			const buySuperLuckBoost = document.getElementById('buySuperLuckBoost');
+			const buyUltraLuckBoost = document.getElementById('buyUltraLuckBoost');
+			const shopStatus = document.getElementById('shopStatus');
+			const shopStatusSuper = document.getElementById('shopStatusSuper');
+			const shopStatusUltra = document.getElementById('shopStatusUltra');
+			const LUCK_COST = 250;
+			const LUCK_BOOST_AMOUNT = 0.003;
+			const LUCK_DURATION_MS = 10 * 60 * 1000;
+			const SUPER_LUCK_COST = 1000;
+			const SUPER_LUCK_BOOST_AMOUNT = 0.008;
+			const ULTRA_LUCK_COST = 2500;
+			const ULTRA_LUCK_BOOST_AMOUNT = 0.015;
+
+			function formatRemaining(ms) {
+				if (ms <= 0) return 'expired';
+				const s = Math.floor(ms/1000);
+				const mm = Math.floor(s/60).toString().padStart(2,'0');
+				const ss = (s%60).toString().padStart(2,'0');
+				return `${mm}:${ss}`;
+			}
+
+			function updateShopUI() {
+					let s = null;
+					try { s = JSON.parse(localStorage.getItem('shop_luck_boost') || 'null'); } catch(_) { s = null; }
+					const now = Date.now();
+					const have = window.getClickCount ? window.getClickCount() : (parseInt(getCookie('oskar_clicker_count')||localStorage.getItem('oskar_clicker_count')||'0',10)||0);
+					const unlocked = (typeof readUnlockedMilestones === 'function') ? readUnlockedMilestones() : {};
+					const superAllowed = !!(unlocked && unlocked['clicks_2500'] && unlocked['popups_500'] && unlocked['variation_1']);
+					const ultraAllowed = !!(unlocked && unlocked['clicks_5000'] && unlocked['popups_1000'] && unlocked['variation_5'] && unlocked['obtained_67_67']);
+					if (s && s.expires && Number(s.expires) > now) {
+						const rem = Number(s.expires) - now;
+						shopStatus.textContent = `Active: +${(s.boostAmount||0).toFixed(3)} until ${formatRemaining(rem)} remaining`;
+						if (buyLuckBoost) buyLuckBoost.disabled = true;
+						if (buySuperLuckBoost) buySuperLuckBoost.disabled = true;
+						if (buyUltraLuckBoost) buyUltraLuckBoost.disabled = true;
+						if (shopStatusSuper) shopStatusSuper.textContent = '';
+						if (shopStatusUltra) shopStatusUltra.textContent = '';
+					} else {
+						try { localStorage.removeItem('shop_luck_boost'); } catch(_) {}
+						shopStatus.textContent = `No active boosts. You have ${have} clicks available.`;
+						if (buyLuckBoost) buyLuckBoost.disabled = (have < LUCK_COST);
+						if (buySuperLuckBoost) {
+							if (!superAllowed) {
+								buySuperLuckBoost.disabled = true;
+								if (shopStatusSuper) shopStatusSuper.textContent = 'Super Luck Boost locked: requires Clicks milestone 2500, Popups milestone 500 and 1 variation.';
+							} else {
+								buySuperLuckBoost.disabled = (have < SUPER_LUCK_COST);
+								if (shopStatusSuper) shopStatusSuper.textContent = buySuperLuckBoost.disabled ? `Super locked: need ${SUPER_LUCK_COST} clicks` : '';
+							}
+						}
+						if (buyUltraLuckBoost) {
+							if (!ultraAllowed) {
+								buyUltraLuckBoost.disabled = true;
+								if (shopStatusUltra) shopStatusUltra.textContent = "Ultra Luck Boost locked: requires Clicks milestone 5000, Popups milestone 1000, and 5 variations.";
+							} else {
+								buyUltraLuckBoost.disabled = (have < ULTRA_LUCK_COST);
+								if (shopStatusUltra) {
+									if (buyUltraLuckBoost.disabled) {
+										shopStatusUltra.textContent = `Ultra locked: need ${ULTRA_LUCK_COST} clicks`;
+									} else {
+										if (unlocked && unlocked['obtained_67_67']) {
+											shopStatusUltra.textContent = "Ultra available — 67 × '67' milestone unlocked.";
+										} else {
+											shopStatusUltra.textContent = '';
+										}
+									}
+								}
+							}
+						}
+					}
+			}
+
+			if (buyLuckBoost) buyLuckBoost.addEventListener('click', () => {
+				const have = window.getClickCount ? window.getClickCount() : (parseInt(getCookie('oskar_clicker_count')||localStorage.getItem('oskar_clicker_count')||'0',10)||0);
+				if (have < LUCK_COST) {
+					showToast('Not enough clicks to buy Luck Boost (cost: 250 clicks)');
+					return;
+				}
+				if (window.adjustClickCount) window.adjustClickCount(-LUCK_COST); else {
+					try { const newv = Math.max(0, have - LUCK_COST); setCookie('oskar_clicker_count', String(newv), 365); localStorage.setItem('oskar_clicker_count', String(newv)); document.getElementById('count').textContent = newv; } catch(_) {}
+				}
+				const boost = { expires: Date.now() + LUCK_DURATION_MS, boostAmount: LUCK_BOOST_AMOUNT };
+				try { localStorage.setItem('shop_luck_boost', JSON.stringify(boost)); } catch(_) {}
+				updateShopUI();
+				showToast('Luck Boost activated for 10 minutes.');
+			});
+			if (buySuperLuckBoost) buySuperLuckBoost.addEventListener('click', () => {
+				const have = window.getClickCount ? window.getClickCount() : (parseInt(getCookie('oskar_clicker_count')||localStorage.getItem('oskar_clicker_count')||'0',10)||0);
+				const unlocked = (typeof readUnlockedMilestones === 'function') ? readUnlockedMilestones() : {};
+				if (!(unlocked && unlocked['clicks_2500'] && unlocked['popups_500'] && unlocked['variation_1'])) {
+					showToast('Cannot buy Super Luck Boost: required milestones not unlocked.');
+					return;
+				}
+				if (have < SUPER_LUCK_COST) {
+					showToast('Not enough clicks to buy Super Luck Boost (cost: 1000 clicks)');
+					return;
+				}
+				if (window.adjustClickCount) window.adjustClickCount(-SUPER_LUCK_COST); else {
+					try { const newv = Math.max(0, have - SUPER_LUCK_COST); setCookie('oskar_clicker_count', String(newv), 365); localStorage.setItem('oskar_clicker_count', String(newv)); document.getElementById('count').textContent = newv; } catch(_) {}
+				}
+				const boost = { expires: Date.now() + LUCK_DURATION_MS, boostAmount: SUPER_LUCK_BOOST_AMOUNT };
+				try { localStorage.setItem('shop_luck_boost', JSON.stringify(boost)); } catch(_) {}
+				updateShopUI();
+				showToast('Super Luck Boost activated for 10 minutes.');
+			});
+			if (buyUltraLuckBoost) buyUltraLuckBoost.addEventListener('click', () => {
+				const have = window.getClickCount ? window.getClickCount() : (parseInt(getCookie('oskar_clicker_count')||localStorage.getItem('oskar_clicker_count')||'0',10)||0);
+				const unlocked = (typeof readUnlockedMilestones === 'function') ? readUnlockedMilestones() : {};
+				if (!(unlocked && unlocked['clicks_5000'] && unlocked['popups_1000'] && unlocked['variation_5'] && unlocked['obtained_67_67'])) {
+					showToast('Cannot buy Ultra Luck Boost: required milestones not unlocked.');
+					return;
+				}
+				if (have < ULTRA_LUCK_COST) {
+					showToast('Not enough clicks to buy Ultra Luck Boost (cost: 2500 clicks)');
+					return;
+				}
+				if (window.adjustClickCount) window.adjustClickCount(-ULTRA_LUCK_COST); else {
+					try { const newv = Math.max(0, have - ULTRA_LUCK_COST); setCookie('oskar_clicker_count', String(newv), 365); localStorage.setItem('oskar_clicker_count', String(newv)); document.getElementById('count').textContent = newv; } catch(_) {}
+				}
+				const boost = { expires: Date.now() + LUCK_DURATION_MS, boostAmount: ULTRA_LUCK_BOOST_AMOUNT };
+				try { localStorage.setItem('shop_luck_boost', JSON.stringify(boost)); } catch(_) {}
+				updateShopUI();
+				showToast('Ultra Luck Boost activated for 10 minutes.');
+			});
+			setInterval(updateShopUI, 1000);
+			(function(){
+				const BUY_KEY = 'upgrade_click_value_count';
+				const BASE_COST = 60;
+				const MULT = 1.35;
+				const btn = document.getElementById('buyClickValueUpgrade');
+				const status = document.getElementById('clickValueStatus');
+				const priceEl = document.getElementById('clickValuePrice');
+				function readOwned() { try { return parseInt(localStorage.getItem(BUY_KEY)||'0',10) || 0; } catch(_) { return 0; } }
+				function writeOwned(v){ try { localStorage.setItem(BUY_KEY, String(v)); } catch(_) {} }
+				function currentPrice(owned){ return Math.max(1, Math.ceil(BASE_COST * Math.pow(MULT, owned))); }
+				function updateUI(){
+					const owned = readOwned();
+					const price = currentPrice(owned);
+					if (priceEl) priceEl.textContent = `Cost: ${price} Moyai`;
+					if (status) status.textContent = `Owned: ${owned} — Click value: ${1+owned}`;
+					let canBuy = false;
+					try { const moy = unlockedMoyais && unlockedMoyais['moyai1'] ? Number(unlockedMoyais['moyai1'].count) || 0 : 0; canBuy = (moy >= price); } catch(_) { canBuy = false; }
+					if (btn) btn.disabled = !canBuy;
+					try { window.clickValue = 1 + owned; } catch(_) { window.clickValue = 1 + owned; }
+				}
+				if (btn) btn.addEventListener('click', () => {
+					const owned = readOwned();
+					const price = currentPrice(owned);
+					try {
+						const moyEntry = unlockedMoyais && unlockedMoyais['moyai1'];
+						const have = moyEntry ? (Number(moyEntry.count) || 0) : 0;
+						if (have < price) { showToast(`Not enough Moyai to buy upgrade (need ${price})`); updateUI(); return; }
+						try { unlockedMoyais['moyai1'].count = Math.max(0, (Number(unlockedMoyais['moyai1'].count)||0) - price); } catch(_) {}
+						try { setCookie('unlockedMoyais', JSON.stringify(unlockedMoyais), 365); } catch(_) {}
+						try { localStorage.setItem('unlockedMoyais', JSON.stringify(unlockedMoyais)); } catch(_) {}
+						writeOwned(owned + 1);
+						updateUI();
+						if (typeof updateCollection === 'function') updateCollection();
+						showToast(`Click value upgraded — each click now grants ${1+owned+1} displayed clicks.`);
+					} catch(err) { showToast('Upgrade failed'); }
+				});
+				setInterval(updateUI, 1000);
+				updateUI();
+			})();
+			(function(){
+				const KEY = 'upgrade_permanent_luck_count';
+				const BASE = 80;
+				const MULT = 1.30;
+				const btn = document.getElementById('buyPermLuckUpgrade');
+				const status = document.getElementById('permLuckStatus');
+				const priceEl = document.getElementById('permLuckPrice');
+				function readOwned(){ try { return parseInt(localStorage.getItem(KEY)||'0',10) || 0; } catch(_) { return 0; } }
+				function writeOwned(v){ try { localStorage.setItem(KEY, String(v)); } catch(_) {} }
+				function currentPrice(owned){ return Math.max(1, Math.ceil(BASE * Math.pow(MULT, owned))); }
+				function updateUI(){
+					const owned = readOwned();
+					const price = currentPrice(owned);
+					if (priceEl) priceEl.textContent = `Cost: ${price} Diva Moyai`;
+					if (status) status.textContent = `Owned: ${owned}`;
+					let canBuy = false;
+					try { const diva = unlockedMoyais && unlockedMoyais['moyai2'] ? Number(unlockedMoyais['moyai2'].count) || 0 : 0; canBuy = (diva >= price); } catch(_) { canBuy = false; }
+					if (btn) btn.disabled = !canBuy;
+				}
+				if (btn) btn.addEventListener('click', () => {
+					const owned = readOwned();
+					const price = currentPrice(owned);
+					try {
+						const divaEntry = unlockedMoyais && unlockedMoyais['moyai2'];
+						const have = divaEntry ? (Number(divaEntry.count) || 0) : 0;
+						if (have < price) { showToast(`Not enough Diva Moyai to buy upgrade (need ${price})`); updateUI(); return; }
+						try { unlockedMoyais['moyai2'].count = Math.max(0, (Number(unlockedMoyais['moyai2'].count)||0) - price); } catch(_) {}
+						try { setCookie('unlockedMoyais', JSON.stringify(unlockedMoyais), 365); } catch(_) {}
+						try { localStorage.setItem('unlockedMoyais', JSON.stringify(unlockedMoyais)); } catch(_) {}
+						writeOwned(owned + 1);
+						updateUI();
+						if (typeof updateCollection === 'function') updateCollection();
+						showToast('Permanent Luck increased by 1 milestone.');
+					} catch(err) { showToast('Upgrade failed'); }
+				});
+				setInterval(updateUI, 1000);
+				updateUI();
+			})();
+			const upgradesButton = document.getElementById('upgradesButton');
+			const upgradesPanel = document.getElementById('upgradesPanel');
+			const closeUpgrades = document.getElementById('closeUpgrades');
+			if (upgradesButton) upgradesButton.addEventListener('click', (e) => {
+				console.debug && console.debug('click: upgradesButton', e && (e.target && (e.target.id || e.target.className || e.target.nodeName)));
+				try { e && e.stopPropagation(); } catch(_) {}
+				try { const slidingMenu = document.getElementById('slidingMenu'); if (slidingMenu && e && slidingMenu.contains(e.target) && !e.target.closest('.grid-button')) { console.debug && console.debug('upgradesButton click ignored (inside slidingMenu non-grid)'); return; } } catch(_) {}
+				try { if (window.showPanel) window.showPanel('upgradesPanel','block'); } catch(_) {}
+			});
+			if (closeUpgrades) closeUpgrades.addEventListener('click', () => { if (upgradesPanel) upgradesPanel.style.display = 'none'; });
+			function showToast(message, timeoutMs=4000) {
+				try {
+					const container = document.getElementById('guiToastContainer');
+					if (!container) return;
+					const t = document.createElement('div');
+					t.className = 'guiToast';
+					t.innerHTML = `<span>${String(message)}</span>`;
+					const close = document.createElement('button');
+					close.textContent = 'OK';
+					close.addEventListener('click', () => { t.remove(); });
+					t.appendChild(close);
+					container.appendChild(t);
+					if (timeoutMs > 0) setTimeout(() => { try { t.remove(); } catch(_) {} }, timeoutMs);
+				} catch(_) {}
+			}
+			closeMilestones.addEventListener('click', () => { milestonePanel.style.display='none'; });
+			window.unlockMoyai = function(id, name, chance) {
+				const prev = unlockedMoyais[id] || {};
+				const prevCount = Number(prev.count) || 0;
+				const prevEver = Number(prev.everOwned) || prevCount;
+				const def = window.ITEM_DEFS[id] || {};
+				unlockedMoyais[id] = {
+					name: name || prev.name || def.name || id,
+					baseChance: def.baseChance != null ? def.baseChance : (prev.baseChance || 0),
+					rarity: def.rarity || prev.rarity || 'common',
+					count: prevCount + 1,
+					everOwned: prevEver + 1
+				};
+				try { setCookie('unlockedMoyais', JSON.stringify(unlockedMoyais), 365); } catch(_) {}
+				try { localStorage.setItem('unlockedMoyais', JSON.stringify(unlockedMoyais)); } catch(_) {}
+				const pc = readPopupCount() + 1;
+				persistPopupCount(pc);
+				checkMilestones();
+			};
+			window.checkMilestones = checkMilestones;
+		})();
+
+		(function(){
+			const settingsButton = document.getElementById('settingsButton');
+			const slidingMenu = document.getElementById('slidingMenu');
+
+			const memeBtn = document.getElementById('memePetButton');
+			const memePanel = document.getElementById('memePetPanel');
+			const closeMeme = document.getElementById('closeMemePet');
+
+			if (settingsButton) settingsButton.addEventListener('click', () => {
+				try { if (window.closeAllMenus) window.closeAllMenus(); } catch(_) {}
+				try {
+					if (memePanel && memePanel.style.display && memePanel.style.display !== 'none') {
+						try { memePanel.style.right = '-380px'; } catch(_) {}
+						setTimeout(() => { try { memePanel.style.display = 'none'; } catch(_) {} }, 320);
+					}
+				} catch(_) {}
+				if (slidingMenu) slidingMenu.classList.toggle('open');
+			});
+
+			if (memeBtn && memePanel) {
+				memeBtn.addEventListener('click', () => {
+					try {
+						const isVisible = (memePanel.style.display && memePanel.style.display !== 'none');
+						const isAtRight = (memePanel.style.right === '0px' || memePanel.style.right === '0');
+						if (isVisible && isAtRight) {
+							try { memePanel.style.right = '-380px'; } catch(_) {}
+							setTimeout(() => { try { memePanel.style.display = 'none'; } catch(_) {} }, 320);
+							return;
+						}
+						try { if (window.closeAllMenus) window.closeAllMenus(); } catch(_) {}
+						try { if (slidingMenu) slidingMenu.classList.remove('open'); } catch(_) {}
+						memePanel.style.display = 'block';
+						setTimeout(() => { try { memePanel.style.right = '0'; } catch(_) {} }, 20);
+					} catch(_) {}
+				});
+			}
+
+			if (closeMeme && memePanel) {
+				closeMeme.addEventListener('click', () => {
+					try { memePanel.style.right = '-380px'; } catch(_) {}
+					setTimeout(() => { try { memePanel.style.display = 'none'; } catch(_) {} }, 320);
+				});
+			}
+		})();
+		(function(){
+			const target = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','2','1','3','7'];
+			let buffer = [];
+			function pushKey(k){
+				buffer.push(k);
+				if (buffer.length > target.length) buffer.shift();
+				if (buffer.length === target.length) {
+					let ok = true;
+					for (let i=0;i<target.length;i++){ if (buffer[i] !== target[i]) { ok = false; break; } }
+					if (ok) {
+						const btn = document.getElementById('devTestButton');
+						if (btn) {
+							btn.style.display = 'flex';
+						}
+						try { if (typeof showToast === 'function') showToast('Developer menu unlocked'); }
+						catch(_){}
+						buffer = [];
+					}
+				}
+			}
+			document.addEventListener('keydown', (ev) => {
+				const k = ev.key;
+				pushKey(k);
+			});
+		})();
+	</script>
+	<div id="proTip" style="position:fixed;left:50%;transform:translateX(-50%);bottom:12px;background:rgba(0,0,0,0.66);color:#fff;padding:8px 12px;border-radius:8px;font-size:13px;z-index:9998;box-shadow:0 6px 18px rgba(0,0,0,0.12);">Pro tip: u can still click while gif is playing</div>
+</body>
 </html>
